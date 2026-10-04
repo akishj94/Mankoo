@@ -1,0 +1,158 @@
+---
+// One entry per line the business answers on. The tel: URI is derived from
+// each display string, so a number can be written in whichever format reads
+// best (spaces, dashes, +91) and the dial string still comes out right.
+const phones = ['+91 9988802100', '+91 161 456 7890'];
+
+const email = 'info@mankoopresses.com';
+
+// The address is used verbatim as the Google Maps query, so it needs no
+// separate link to maintain.
+const address =
+  '29 / 535, G.T. Road, Opp. Dhandari Kalan Railway Station, Ludhiana - 141010. Punjab. India.';
+const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+  address
+)}`;
+
+interface Link {
+  label: string;
+  href: string;
+  /** Opens in a new tab — set on the off-site destinations only. */
+  external?: boolean;
+}
+
+interface LinkColumn {
+  title: string;
+  links: Link[];
+}
+
+const linkColumns: LinkColumn[] = [
+  {
+    title: 'Company',
+    links: [
+      { label: 'About', href: '/about' },
+      { label: 'News', href: '/news' },
+      { label: 'Contact', href: '/contact' },
+    ],
+  },
+  {
+    title: 'Machines',
+    links: [
+      { label: 'Type A Power Press', href: '/machines/type-a' },
+      { label: 'Type B Power Press', href: '/machines/type-b' },
+      { label: 'View All', href: '/machines' },
+    ],
+  },
+  {
+    title: 'Connect',
+    // TODO: replace with the real profile URLs.
+    links: [
+      { label: 'Facebook', href: 'https://www.facebook.com/mankoopowerpresses/', external: true },
+      { label: 'Twitter / X', href: 'https://x.com/indermankoo', external: true },
+    ],
+  },
+];
+
+// TODO: neither legal page exists yet.
+const legalLinks: Link[] = [
+  { label: 'Privacy Policy', href: '/privacy-policy' },
+  { label: 'Terms', href: '/terms' },
+];
+
+const year = new Date().getFullYear();
+---
+
+<footer class="text-white border-t-1 border-[#242B3C]">
+  <div class="container pb-8 pt-[clamp(56px,5vw,50px)]">
+    <div class="flex flex-col gap-y-12 lg:flex-row lg:items-start">
+      <div class="lg:w-72 lg:shrink-0">
+        <a href="/" class="inline-flex focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
+          <img
+            src="/Logo-06.webp"
+            alt="Mankoo"
+            width="190"
+            height="49"
+            class="h-8 w-auto brightness-0 invert"
+          />
+        </a>
+
+        <ul class="mt-6 space-y-3 text-sm text-white/60">
+          <li>
+            <a
+              href={`mailto:${email}`}
+              class="transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+            >
+              {email}
+            </a>
+          </li>
+          <li>
+            <a
+              href={mapsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="block max-w-[34ch] transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+            >
+              {address}
+            </a>
+          </li>
+          {phones.map((phone) => (
+            <li>
+              <a
+                href={`tel:${phone.replace(/[^\d+]/g, '')}`}
+                class="transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+              >
+                {phone}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-3 lg:ml-auto lg:flex lg:gap-x-16">
+        {linkColumns.map((column) => (
+          <nav aria-label={column.title} class="lg:w-44">
+            <h2 class="text-sm uppercase text-white/50">
+              {column.title}
+            </h2>
+
+            <ul class="mt-6 space-y-4 text-sm">
+              {column.links.map((link) => (
+                <li>
+                  <a
+                    href={link.href}
+                    target={link.external ? '_blank' : undefined}
+                    rel={link.external ? 'noopener noreferrer' : undefined}
+                    class="inline-block transition-colors hover:text-white/70 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-[clamp(40px,4vw,64px)] w-full">
+    <div class="container py-6 text-sm text-white/50">
+      <div class="flex flex-col text-xs gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <p>© {year} Mankoo India Pvt.Ltd. All rights reserved.</p>
+
+        <ul class="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs">
+          {legalLinks.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                class="transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+              >
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </div>
+</footer>

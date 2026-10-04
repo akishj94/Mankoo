@@ -1,0 +1,294 @@
+---
+import Layout from '../layouts/Layout.astro';
+import MachineSlider from '../components/MachineSlider.astro';
+import FeaturedProduct from '../components/FeaturedProduct.astro';
+import NewsSection from '../components/NewsSection.astro';
+import TestimonialSection from '../components/TestimonialSection.astro';
+import SplitGridSection from '../components/SplitGridSection.astro';
+import ImageTransitionSection from '../components/ImageTransitionSection.astro';
+
+// Imported from src/assets rather than served out of public/ — that is what
+// lets Astro optimise them (WebP conversion + responsive srcset).
+import typeA from '../assets/images/type-a.svg';
+import typeB from '../assets/images/type-b.svg';
+import forgingHammer from '../assets/images/forging-hammer.svg';
+import shearing from '../assets/images/shearing.svg';
+import hydraulic from '../assets/images/hydraulic.svg';
+import spareParts from '../assets/images/spare-parts.svg';
+import featuredImage from '../assets/images/fm.jpg';
+import newsCframe from '../assets/images/news-cframe.svg';
+import newsDrivetrain from '../assets/images/news-drivetrain.svg';
+import newsExpo from '../assets/images/news-expo.svg';
+import testimonialShopfloor from '../assets/images/testimonial-shopfloor.svg';
+import testimonialLogo from '../assets/images/testimonial-logo.svg';
+import aboutFace from '../assets/images/about-face.svg';
+import aboutScreen from '../assets/images/about-screen.svg';
+import capabilityPress from '../assets/images/capability-press.svg';
+import capabilityHammer from '../assets/images/capability-hammer.svg';
+
+// TODO: the placeholder line art in src/assets is stand-in art for real machine
+// photography — the SVGs pass through the optimiser untouched, so they gain
+// nothing here until they are replaced with real photos.
+const machines = [
+  {
+    href: '/machines/type-a',
+    image: typeA,
+    alt: 'Type A power press standing on the shop floor',
+    title: 'Type A Power Press',
+    description:
+      'The workhorse of the range — hot and cold forging presses built for continuous, heavy-cycle production.',
+  },
+  {
+    href: '/machines/type-b',
+    image: typeB,
+    alt: 'Type B power press with its guard open',
+    title: 'Type B Power Press',
+    description:
+      'A larger frame for long-stroke jobs, with variable speed and a bolt tooling package as standard.',
+  },
+  {
+    href: '/machines',
+    image: forgingHammer,
+    alt: 'Forging hammer with its drive shaft exposed',
+    title: 'Forging Hammers',
+    description:
+      'Board and steam hammers for shape and closed-die forging, sized from 1 to 10 tonnes.',
+  },
+  {
+    href: '/machines',
+    image: shearing,
+    alt: 'Guillotine shearing machine ready for a cut',
+    title: 'Shearing Machines',
+    description:
+      'Guillotine and swing-beam shears for plate, sheet and bar, with adjustable rake and hold-down.',
+  },
+  {
+    href: '/machines',
+    image: hydraulic,
+    alt: 'Hydraulic press under load',
+    title: 'Hydraulic Presses',
+    description:
+      'Deep-throat hydraulic presses for forming, straightening and assembly work on the shop floor.',
+  },
+  {
+    href: '/machines',
+    image: spareParts,
+    alt: 'Assorted machined spares laid out on a bench',
+    title: 'Spares & Consumables',
+    description:
+      'OEM spares, dies and wear parts machined in-house and kept in stock for every machine we build.',
+  },
+];
+
+// TODO: these two are stand-in line art — the wide crops are drawn to the
+// section's 1122x475 frame so they do not need heavy cropping. Swap both for
+// real photography.
+const capabilities = [
+  {
+    image: capabilityPress,
+    alt: 'Straight-side power press frame standing in the assembly bay',
+    title: 'Mechanical power presses',
+    description:
+      'C-frame, H-frame, cross-shaft and knuckle-joint presses from 10 to 1000 tons, with single or double gear reduction and pneumatic or rolling-key clutches.',
+  },
+  {
+    image: capabilityHammer,
+    alt: 'Forging hammer with its guide posts and drive wheel exposed',
+    title: 'Forging hammers',
+    description:
+      'Board and steam hammers sized from 1 to 10 tonnes, on a heavy fabricated frame with contoured guide posts and an anvil block machined to suit your tooling.',
+  },
+];
+
+// TODO: the /news listing page is still a stub — these hrefs will need real
+// article routes once the CMS or content collection is in place.
+const posts = [
+  {
+    href: '/news',
+    image: newsCframe,
+    imageAlt: 'C-frame and H-frame press frames side by side',
+    category: 'Insight',
+    readTime: '3 min read',
+    title: 'C-frame or H-frame: choosing the right press for your die',
+  },
+  {
+    href: '/news',
+    image: newsDrivetrain,
+    imageAlt: 'Press flywheel and drivetrain assembly',
+    category: 'Insight',
+    readTime: '3 min read',
+    title: 'C-frame or H-frame: choosing the right press for your die',
+  },
+  {
+    href: '/news',
+    image: newsExpo,
+    imageAlt: 'Exhibition stand with a press on display',
+    category: 'Insight',
+    readTime: '3 min read',
+    title: 'C-frame or H-frame: choosing the right press for your die',
+  },
+];
+const reasons = [
+  { title: 'Designed, machined and assembled under one roof' },
+  { title: 'ISO 9001:2015 certified manufacturing' },
+  { title: 'Five decades of press-building know-how' },
+  { title: 'Running on production floors in 10+ countries' },
+];
+---
+
+<Layout title="Home">
+  <section class="relative isolate flex min-h-svh flex-col justify-end overflow-hidden bg-neutral-900">
+    <!-- Background video. TODO: drop the real clip at /public/hero.mp4 -->
+    <video
+      class="absolute inset-0 -z-10 size-full object-cover"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="auto"
+      poster="/hero-poster.jpg"
+      data-hero-video
+    >
+      <source src="/main.mp4" type="video/mp4" />
+    </video>
+
+    <div
+      class="absolute inset-0 -z-10 bg-gradient-to-t from-black/80 via-black/30 to-black/50"
+      aria-hidden="true"
+    >
+    </div>
+
+    <div class="container relative pb-8 sm:pb-12">
+      <div class="flex items-end justify-between gap-6">
+        <div class="min-w-0 md:max-w-[485px]">
+          <p class="text-xs font-light uppercase tracking-[0.2em] text-white/70">
+            Mankoo India · Ludhiana · Since 1974
+          </p>
+
+          <h1 class="mt-4 text-[40px] font-normal leading-[1.08] tracking-tight text-white">
+            Leading and dedicated Power Press Manufacturer, Since 1974
+          </h1>
+
+          <a
+            href="/machines"
+            class="mt-8 inline-flex min-w-[152px] items-center justify-center rounded-[10px] bg-[rgba(246,246,246,0.2)] px-6 py-3 text-sm text-white backdrop-blur-[3rem] transition-colors hover:bg-[rgba(246,246,246,0.32)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+          >
+            Discover
+          </a>
+        </div>
+
+        <button
+          type="button"
+          data-video-toggle
+          aria-label="Pause background video"
+          aria-pressed="false"
+          class="relative grid size-10 shrink-0 cursor-pointer place-items-center rounded-full bg-white/10 text-white backdrop-blur-[0.5rem] transition-colors hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+        >
+          <!-- Progress track + progress ring (r must match RADIUS in animations.js) -->
+          <svg
+            class="pointer-events-none absolute inset-0 size-full -rotate-90"
+            viewBox="0 0 40 40"
+            fill="none"
+            aria-hidden="true"
+          >
+            <circle
+              cx="20"
+              cy="20"
+              r="19"
+              stroke="currentColor"
+              stroke-opacity="0.35"
+              stroke-width="2"
+            />
+            <circle
+              data-video-progress
+              cx="20"
+              cy="20"
+              r="19"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-dasharray="119.38"
+              stroke-dashoffset="119.38"
+            />
+          </svg>
+
+          <!-- Shown while playing -->
+          <svg data-icon-pause width="13" height="13" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true">
+            <rect x="3" y="2" width="3" height="10" rx="1" />
+            <rect x="8" y="2" width="3" height="10" rx="1" />
+          </svg>
+
+          <!-- Shown while paused -->
+          <svg data-icon-play class="hidden" width="13" height="13" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true">
+            <path d="M4 2.5v9a.6.6 0 0 0 .92.5l7-4.5a.6.6 0 0 0 0-1l-7-4.5A.6.6 0 0 0 4 2.5Z" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </section>  
+
+  <SplitGridSection
+    images={[
+      { src: aboutFace, alt: 'Engineer reviewing a machine readout' },
+      { src: aboutScreen, alt: 'Diagnostic screen on the shop floor' },
+    ]}
+    lead="Mankoo India designs and builds power presses, forging hammers and shearing machines for manufacturers who run them hardest."
+    supporting="From our plant on GT Road, Ludhiana, every machine is designed, machined, assembled and trial-run under one roof — then shipped to production floors across India and more than ten countries."
+    stats={[{ value: '50+', lines: ['Years in', 'power', 'presses'] }]}
+    ctaHref="/about"
+    ctaLines={['More About', 'our story']}
+  />
+
+  <ImageTransitionSection
+    eyebrow="ENGINEERING CAPABILITY"
+    title="We build the whole machine, not just the frame. Design, machining, assembly and trial runs happen in-house, so every press leaves our unit tested as a complete system."
+    interval={6}
+    slides={capabilities}
+  />
+
+<MachineSlider
+    eyebrow="THE MACHINES RANGE"
+    title="Seven machine families. One standard - They keep running, shift after shift, year after year."
+    viewAllHref="/machines"
+    slides={machines}
+  />
+
+  <FeaturedProduct
+    eyebrow="FEATURED PRODUCT"
+    title="Straight Side Cross Shaft Power Press"
+    description="Our straight-side workhorse for heavy stamping lines. A rigid frame for off-centre loads, a pneumatic clutch-brake for precise inching and stops — built and trial-run in Ludhiana before it ships."
+    image={featuredImage}
+    imageAlt="Type A power press standing on the shop floor"
+    ctaHref="/machines/type-a"
+    ctaLabel="Explore the Straight Side Cross Shaft Power Press"
+  />
+
+
+
+<section class="bg-white text-neutral-900">
+  <div class="container py-24">
+    <h2 class="mt-4 text-[32px] leading-[1.08] tracking-tight sm:text-[30px] md:text-[36px] lg:text-[42.5px]" data-reveal>
+      Why manufacturers choose Mankoo Power Presses
+    </h2>
+
+    <div class="mt-23 grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
+      {reasons.map((reason, i) => (
+        <div class="border-t border-2x-[#CACACA] pt-5" data-reveal>
+          <span class="text-sm text-orange-500">
+            {String(i + 1).padStart(2, '0')}
+          </span>
+          <p class="mt-3 text-[20px] leading-snug lg:max-w-[80%]">{reason.title}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+  <TestimonialSection
+    image={testimonialShopfloor}
+    imageAlt="Mankoo power press running on the client's shop floor"
+    logo={testimonialLogo}
+  />
+
+  <NewsSection posts={posts} />
+  
+</Layout>

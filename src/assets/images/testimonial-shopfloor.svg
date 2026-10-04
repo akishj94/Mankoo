@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="600" height="600" role="img" aria-label="Client shop floor photo placeholder">
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="0.6" y2="1">
+      <stop offset="0" stop-color="#f4f4f5"/>
+      <stop offset="1" stop-color="#e2e4e8"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="600" fill="url(#paper)"/>
+  <g fill="none" stroke="#9aa3ad" stroke-opacity="0.55" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+    <rect x="170" y="300" width="260" height="20" rx="8"/>
+    <rect x="200" y="150" width="200" height="140" rx="10"/>
+    <rect x="264" y="72" width="88" height="78" rx="8"/>
+    <path d="M240 72V40h136v32"/>
+    <path d="M308 150V116"/>
+    <path d="M308 210v70"/>
+  </g>
+  <text x="300" y="520" text-anchor="middle" fill="#6b7280" fill-opacity="0.7" font-family="Inter, Helvetica, Arial, sans-serif" font-size="19" letter-spacing="3">PLACEHOLDER IMAGE</text>
+</svg>

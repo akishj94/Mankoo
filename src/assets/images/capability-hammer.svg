@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2240 950" width="2240" height="950" role="img" aria-label="FORGING HAMMER placeholder">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1b2846"/>
+      <stop offset="1" stop-color="#000A22"/>
+    </linearGradient>
+    <pattern id="hatch" width="48" height="48" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <line x1="0" y1="0" x2="0" y2="48" stroke="#ffffff" stroke-opacity="0.045" stroke-width="10"/>
+    </pattern>
+  </defs>
+  <rect width="2240" height="950" fill="url(#bg)"/>
+  <rect width="2240" height="950" fill="url(#hatch)"/>
+  <g fill="none" stroke="#ffffff" stroke-opacity="0.22" stroke-width="7" stroke-linejoin="round">
+    <!-- shop floor -->
+    <path d="M0 830h2240"/>
+    <!-- hammer frame -->
+    <path d="M830 760V250h580v510"/>
+    <!-- tup, dropped between its guide posts -->
+    <rect x="780" y="420" width="680" height="160"/>
+    <rect x="840" y="250" width="70" height="510"/>
+    <rect x="1330" y="250" width="70" height="510"/>
+    <!-- anvil and column -->
+    <rect x="1000" y="580" width="240" height="120"/>
+    <rect x="1080" y="700" width="80" height="60"/>
+    <rect x="740" y="760" width="660" height="70"/>
+    <!-- guide post bolts -->
+    <circle cx="875" cy="300" r="20"/>
+    <circle cx="1365" cy="300" r="20"/>
+    <circle cx="875" cy="700" r="20"/>
+    <circle cx="1365" cy="700" r="20"/>
+    <!-- drive wheel and connecting rod -->
+    <circle cx="1760" cy="400" r="150"/>
+    <circle cx="1760" cy="400" r="46"/>
+    <path d="M1610 470h-130"/>
+  </g>
+</svg>

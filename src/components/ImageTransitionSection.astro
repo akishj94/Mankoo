@@ -1,0 +1,287 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Slide {
+  /** Imported from src/assets so Astro can optimise it — see index.astro. */
+  image: ImageMetadata;
+  alt: string;
+  title: string;
+  description: string;
+}
+
+interface Props {
+  eyebrow?: string;
+  title?: string;
+  /** Seconds a slide stays on screen; the tab's progress bar fills over it. */
+  interval?: number;
+  /** Two is the intended minimum — with one there is nothing to transition to. */
+  slides: Slide[];
+}
+
+const { eyebrow = 'Our capability', title = '', interval = 6, slides } = Astro.props;
+
+// A pair sits side by side from the tablet breakpoint up; anything longer wraps
+// onto two rows before spreading out.
+const columns =
+  slides.length <= 2
+    ? 'sm:grid-cols-2'
+    : slides.length === 3
+      ? 'sm:grid-cols-2 lg:grid-cols-3'
+      : 'sm:grid-cols-2 lg:grid-cols-4';
+
+const LAYER = 'absolute inset-0 size-full object-cover';
+
+// Astro hoists attribute expressions out of the .map() callback, so anything
+// derived from the loop index is resolved here rather than inline below.
+const layers = slides.map((slide, i) => ({
+  slide,
+  /** Only the visible frame is exposed to assistive tech. */
+  hidden: i === 0 ? undefined : ('true' as string | undefined),
+  class: i === 0 ? `${LAYER} is-active` : LAYER,
+}));
+
+const tabs = slides.map((slide, i) => ({
+  slide,
+  pressed: i === 0 ? 'true' : 'false',
+  tabindex: i === 0 ? 0 : -1,
+}));
+---
+
+<!-- Two stacked blocks: a short intro, then a wide image that crossfades to the
+     next slide while the tab underneath tracks the transition. Nothing here is
+     content-specific — the section only needs an eyebrow, a heading and a list
+     of slides, so it can be reused with any imagery and any wording. -->
+<section
+  data-image-transition
+  data-interval={interval}
+  class="pt-8 pb-[clamp(76px,5vw,100px)] text-white lg:pt-12"
+>
+  <div class="container">
+    <div data-reveal>
+      <p class="text-[12px] uppercase tracking-[0.2em] text-accent">{eyebrow}</p>
+
+      <h2 class="mt-6 text-[26px] leading-[1.2] tracking-tight md:max-w-[60%]">
+        {title}
+      </h2>
+    </div>
+
+    <div class="mt-10 lg:mt-12" data-reveal>
+      <!-- Every slide is stacked in one box — that is what makes the crossfade
+           possible. Only the active layer is lifted above the others; the
+           outgoing one keeps fading underneath it. -->
+      <div data-transition-media class="relative aspect-[1122/475] w-full overflow-hidden bg-ink">
+        {layers.map(({ slide, hidden, class: layerClass }) => (
+          <Image
+            src={slide.image}
+            alt={slide.alt}
+            widths={[640, 1120, 1680, 2240]}
+            sizes="(min-width: 1536px) 1456px, 94vw"
+            loading="lazy"
+            decoding="async"
+            aria-hidden={hidden}
+            data-transition-image
+            class={layerClass}
+          />
+        ))}
+      </div>
+
+      <!-- aria-pressed rather than a tab role: one shared image box is being
+           pointed at, not a panel per slide. -->
+      <div
+        data-transition-tabs
+        class:list={['mt-10 grid grid-cols-1 gap-x-[6%] gap-y-8 sm:mt-12', columns]}
+      >
+        {tabs.map(({ slide, pressed, tabindex }) => (
+          <button
+            type="button"
+            data-transition-tab
+            aria-pressed={pressed}
+            tabindex={tabindex}
+            class="group block w-full cursor-pointer text-left focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-white"
+          >
+            <span class="block text-[18px] leading-snug transition-colors group-hover:text-white/80">
+              {slide.title}
+            </span>
+
+            <span class="mt-3 block max-w-[46ch] text-[13px] leading-[1.45] text-white/50">
+              {slide.description}
+            </span>
+
+            <!-- Track stays put; the accent fill on top is what advances. It
+                 overhangs the 1px rule by a pixel on each side to read as the
+                 thicker bar in the design. -->
+            <span class="relative mt-8 block h-px w-full bg-white/25">
+              <span
+                data-transition-fill
+                class="absolute top-[-1px] left-0 block h-[3px] w-full origin-left scale-x-0 bg-accent"
+              ></span>
+            </span>
+          </button>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Baseline state, so a single static slide still shows before JS runs. The
+     script then drives opacity inline as the crossfade plays. */
+  [data-transition-image] {
+    opacity: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  [data-transition-image].is-active {
+    opacity: 1;
+    z-index: 1;
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+
+  /** Seconds the outgoing image takes to dissolve into the incoming one. */
+  const FADE = 1.2;
+
+  // One instance per section, so the component can be dropped onto any page and
+  // used more than once.
+  document.querySelectorAll<HTMLElement>('[data-image-transition]').forEach((section) => {
+    const images = Array.from(
+      section.querySelectorAll<HTMLImageElement>('[data-transition-image]')
+    );
+    const tabs = Array.from(
+      section.querySelectorAll<HTMLButtonElement>('[data-transition-tab]')
+    );
+    const fills = Array.from(
+      section.querySelectorAll<HTMLElement>('[data-transition-fill]')
+    );
+
+    // A single slide has nothing to transition to — it would only ever show a
+    // static frame, so leave the markup alone and skip the behaviour.
+    if (
+      images.length < 2 ||
+      images.length !== tabs.length ||
+      fills.length !== tabs.length
+    ) {
+      return;
+    }
+
+    const seconds = Number(section.dataset.interval);
+    const duration = seconds > 0 ? seconds : 6;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let index = 0;
+    let onScreen = false;
+    let fillTween: ReturnType<typeof gsap.to> | null = null;
+
+    function markActive(next: number) {
+      index = next;
+
+      images.forEach((image, i) => {
+        image.classList.toggle('is-active', i === next);
+        // Only the visible frame should be announced.
+        image.setAttribute('aria-hidden', String(i !== next));
+      });
+
+      tabs.forEach((tab, i) => {
+        tab.setAttribute('aria-pressed', String(i === next));
+        // Roving tabindex: the row is a single stop in the tab order and the
+        // arrow keys move between the buttons.
+        tab.tabIndex = i === next ? 0 : -1;
+      });
+    }
+
+    function crossfadeTo(next: number) {
+      gsap.killTweensOf(images);
+      images.forEach((image, i) => {
+        if (i !== next) gsap.set(image, { opacity: 0 });
+      });
+
+      const start = () =>
+        gsap.fromTo(
+          images[next],
+          { opacity: 0 },
+          { opacity: 1, duration: reduced ? 0 : FADE, ease: 'power1.inOut' }
+        );
+
+      const incoming = images[next];
+      // Wait for the frame to decode, otherwise a lazy image that has not
+      // arrived yet leaves an empty box on screen mid-fade.
+      if (incoming.complete) start();
+      else incoming.decode().then(start, start);
+    }
+
+    function runFill() {
+      fillTween?.kill();
+      gsap.set(fills, { scaleX: 0 });
+
+      // With the timer stopped (reduced motion, or the section is parked
+      // off-screen) the bar is left full, so the active tab stays obvious.
+      if (reduced || !onScreen) {
+        gsap.set(fills[index], { scaleX: 1 });
+        return;
+      }
+
+      fillTween = gsap.to(fills[index], {
+        scaleX: 1,
+        duration,
+        ease: 'none',
+        onComplete: () => go(index + 1),
+      });
+    }
+
+    function go(next: number) {
+      const target = (next + tabs.length) % tabs.length;
+      markActive(target);
+      crossfadeTo(target);
+      runFill();
+    }
+
+    tabs.forEach((tab, i) => {
+      // Re-clicking the active tab restarts its timer, which is the usual
+      // expectation for a "restart this one" affordance.
+      tab.addEventListener('click', () => go(i));
+
+      tab.addEventListener('keydown', (event) => {
+        const last = tabs.length - 1;
+        const targets: Record<string, number> = {
+          ArrowRight: i === last ? 0 : i + 1,
+          ArrowLeft: i === 0 ? last : i - 1,
+          Home: 0,
+          End: last,
+        };
+        const target = targets[event.key];
+        if (target === undefined) return;
+
+        event.preventDefault();
+        go(target);
+        tabs[target].focus();
+      });
+    });
+
+    let inView = false;
+
+    function syncPlayback() {
+      onScreen = inView && !document.hidden;
+      runFill();
+    }
+
+    // Don't burn a timer on a section nobody is looking at.
+    new IntersectionObserver(
+      ([entry]) => {
+        inView = entry.isIntersecting;
+        syncPlayback();
+      },
+      { threshold: 0.25 }
+    ).observe(section);
+
+    document.addEventListener('visibilitychange', syncPlayback);
+
+    // The markup already marks slide 0 active; this only seeds the tweens.
+    markActive(0);
+    gsap.set(images, { opacity: 0 });
+    gsap.set(images[0], { opacity: 1 });
+  });
+</script>
