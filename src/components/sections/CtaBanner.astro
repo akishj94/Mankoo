@@ -1,0 +1,86 @@
+---
+import type { ImageMetadata } from 'astro';
+import SmartImage from '../SmartImage.astro';
+
+interface Props {
+  title?: string;
+  text?: string;
+  ctaHref?: string;
+  ctaLabel?: string;
+  image?: ImageMetadata | string;
+  imageAlt?: string;
+}
+
+const {
+  title = '',
+  text: body = '',
+  ctaHref = '',
+  ctaLabel = '',
+  image,
+  imageAlt = '',
+} = Astro.props;
+---
+
+<section
+  data-cta-banner
+  data-keep-dark
+  class="relative isolate overflow-hidden bg-ink py-[clamp(4rem,10vw,9rem)] text-white"
+>
+  <SmartImage
+    src={image}
+    alt={imageAlt}
+    widths={[640, 960, 1280, 1920]}
+    sizes="100vw"
+    loading="lazy"
+    decoding="async"
+    class="absolute inset-0 -z-10 size-full object-cover"
+  />
+
+  <div class="container" data-reveal>
+    <div
+      class="mx-auto grid w-full gap-24 bg-gradient-to-br from-white/15 via-white/5 to-white/25 p-6 backdrop-blur-md sm:p-6 md:max-w-[80vw] lg:grid-cols-[auto] lg:items-end lg:gap-x-32 lg:gap-y-8 lg:p-8 xl:gap-x-32 rounded-[4px]"
+    >
+    {title && (
+        <h2 class="leading-[1.08] tracking-tight sm:text-[36px] lg:text-[42px]">
+          {title}
+        </h2>
+      )}
+      <div class="flex gap-6 flex-col md:flex-row lg:gap-16 justify-between items-normal md:items-end">
+        
+
+        {body && (
+          <p class="max-w-[48ch] text-base leading-snug text-white/60">
+            {body}
+          </p>
+        )}
+        {ctaHref && ctaLabel && (
+        <a
+          href={ctaHref}
+          class="inline-flex min-w-[clamp(220px,15vw,300px)] max-w-[300px] flex-col justify-end gap-6 rounded-[6px] bg-[#0b3bff] px-5 pb-4 pt-[4.5rem] text-[15px] lg:text-[16px] text-white transition-colors hover:bg-[#0030e0] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white lg:shrink-0 aspect-[6/3]">
+            <span class="flex w-full items-center justify-between gap-4">
+              {ctaLabel}
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 12 12"
+                fill="none"
+                aria-hidden="true"
+                class="shrink-0"
+              >
+                <path
+                  d="M1 11 11 1M11 1H3M11 1v8"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+          </a>
+        )}
+      </div>
+
+      
+      </div>
+  </div>
+</section>

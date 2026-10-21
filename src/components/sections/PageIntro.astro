@@ -1,0 +1,63 @@
+---
+interface Props {
+  eyebrow?: string;
+  title?: string;
+  content?: string;
+  headingLevel?: 'h1' | 'h2' | 'h3';
+}
+
+// No copy lives here: every string comes from the CMS block, so nothing is tied
+// to a particular page. Empty fields simply do not render.
+const { eyebrow = '', title = '', content = '', headingLevel = 'h1' } = Astro.props;
+
+const paragraphs = content
+  .split(/\n{2,}/)
+  .map((block) => block.trim())
+  .filter(Boolean);
+
+const Heading = headingLevel;
+---
+
+<section data-page-intro class="text-white light:text-ink">
+  <div
+    class="container pb-[clamp(3rem,5vw,6rem)] pt-[calc(var(--header-height)+clamp(2.5rem,5vw,5rem))]"
+  >
+    <div
+      class="grid grid-cols-1 gap-y-10 lg:grid-cols-[minmax(0,42%)_minmax(0,min(26%,_30rem))] lg:items-end lg:gap-[clamp(4rem,24vw,34rem)] md:justify-between lg:justify-normal"
+    >
+      <div class="min-w-0" data-reveal>
+        {eyebrow && (
+          <p class="text-[12px] uppercase tracking-[0.2em] text-accent">
+            {eyebrow}
+          </p>
+        )}
+
+        {title && (
+          <Heading
+            class:list={[
+              'max-w-[11em] leading-[1.08] tracking-tight text-[clamp(30px,4vw,56.5px)]',
+              eyebrow && 'mt-6',
+            ]}
+          >
+            {title}
+          </Heading>
+        )}
+      </div>
+
+      {paragraphs.length > 0 && (
+        <div class="min-w-0" data-reveal>
+          {paragraphs.map((paragraph, index) => (
+            <p
+              class:list={[
+                'text-pretty sm:text-[15px] md:text-[16px] leading-[1.45] text-white/60 light:text-ink/60',
+                index > 0 && 'mt-4',
+              ]}
+            >
+              {paragraph}
+            </p>
+          ))}
+        </div>
+      )}
+    </div>
+  </div>
+</section>

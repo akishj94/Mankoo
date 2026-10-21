@@ -1,0 +1,115 @@
+---
+/**
+ * Smart, truncated + responsive pagination.
+ *
+ * Desktop (`sm:` and up): Prev / windowed page numbers with ellipses / Next.
+ * Mobile: compact Prev / "Page X of Y" / Next bar so nothing can overflow.
+ */
+interface Props {
+  page: number;
+  totalPages: number;
+  getHref: (page: number) => string;
+  ariaLabel?: string;
+}
+
+const { page, totalPages, getHref, ariaLabel = 'Blog pages' } = Astro.props;
+
+type Item = number | 'ellipsis-start' | 'ellipsis-end';
+
+function windowedPages(current: number, total: number): Item[] {
+  // Few enough pages — show everything, no truncation needed.
+  if (total <= 7) {
+    return Array.from({ length: total }, (_, i) => i + 1);
+  }
+  // Near the start: 1 2 3 4 5 … N
+  if (current <= 4) {
+    return [1, 2, 3, 4, 5, 'ellipsis-end', total];
+  }
+  // Near the end: 1 … N-4 N-3 N-2 N-1 N
+  if (current >= total - 3) {
+    return [1, 'ellipsis-start', total - 4, total - 3, total - 2, total - 1, total];
+  }
+  // Middle: 1 … C-1 C C+1 … N
+  return [1, 'ellipsis-start', current - 1, current, current + 1, 'ellipsis-end', total];
+}
+
+const items = windowedPages(page, totalPages);
+const prevHref = page > 1 ? getHref(page - 1) : null;
+const nextHref = page < totalPages ? getHref(page + 1) : null;
+
+const numberBase =
+  'inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg px-3 py-2 text-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink';
+const arrowBase =
+  'inline-flex min-h-[44px] items-center justify-center rounded-lg px-4 py-2 text-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink';
+---
+<nav aria-label={ariaLabel} class="mt-16">
+  {/* Mobile: compact bar — impossible to overflow, big touch targets. */}
+  <div class="flex items-center justify-between gap-3 sm:hidden">
+    {prevHref ? (
+      <a href={prevHref} rel="prev" class:list={[arrowBase, 'text-neutral-600 hover:bg-neutral-100 hover:text-ink']}>
+        ← Prev
+      </a>
+    ) : (
+      <span aria-disabled="true" class:list={[arrowBase, 'cursor-not-allowed opacity-40 text-neutral-400']}>
+        ← Prev
+      </span>
+    )}
+    <p aria-live="polite" class="shrink-0 text-sm tabular-nums text-neutral-600">
+      Page {page} of {totalPages}
+    </p>
+    {nextHref ? (
+      <a href={nextHref} rel="next" class:list={[arrowBase, 'text-neutral-600 hover:bg-neutral-100 hover:text-ink']}>
+        Next →
+      </a>
+    ) : (
+      <span aria-disabled="true" class:list={[arrowBase, 'cursor-not-allowed opacity-40 text-neutral-400']}>
+        Next →
+      </span>
+    )}
+  </div>
+
+  {/* Tablet/desktop: truncated page numbers with ellipses. Wraps safely if needed. */}
+  <div class="hidden flex-wrap items-center justify-center gap-1 sm:flex sm:gap-2">
+    {prevHref ? (
+      <a href={prevHref} rel="prev" class:list={[arrowBase, 'text-neutral-600 hover:bg-neutral-100 hover:text-ink']}>
+        ← Prev
+      </a>
+    ) : (
+      <span aria-disabled="true" class:list={[arrowBase, 'cursor-not-allowed opacity-40 text-neutral-400']}>
+        ← Prev
+      </span>
+    )}
+
+    {items.map((item) =>
+      typeof item === 'number' ? (
+        <a
+          href={getHref(item)}
+          aria-label={`Blog page ${item}`}
+          aria-current={item === page ? 'page' : undefined}
+          class:list={[
+            numberBase,
+            item === page
+              ? 'bg-neutral-900 font-semibold text-white'
+              : 'text-neutral-600 hover:bg-neutral-100 hover:text-ink',
+          ]}
+        >
+          {item}
+        </a>
+      ) : (
+        <span aria-hidden="true" class="inline-flex min-h-[44px] min-w-[32px] items-center justify-center px-1 text-sm text-neutral-400">
+          …
+        </span>
+      ),
+    )}
+
+    {nextHref ? (
+      <a href={nextHref} rel="next" class:list={[arrowBase, 'text-neutral-600 hover:bg-neutral-100 hover:text-ink']}>
+        Next →
+      </a>
+    ) : (
+      <span aria-disabled="true" class:list={[arrowBase, 'cursor-not-allowed opacity-40 text-neutral-400']}>
+        Next →
+      </span>
+    )}
+  </div>
+</nav>

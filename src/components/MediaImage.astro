@@ -1,0 +1,68 @@
+---
+import type { ImageMetadata } from 'astro';
+import SmartImage from './SmartImage.astro';
+
+/**
+ * Reusable image with the frame's aspect ratio fixed in code.
+ *
+ * Pass `ratio` as a CSS aspect ratio (for example `"4/5"`, `"16/9"`, `"1/1"`)
+ * wherever this component is used — it is deliberately not a CMS field, so
+ * editors can swap the photo but never break the layout's proportions. The
+ * ratio is applied as an inline `aspect-ratio` style so any value works
+ * without Tailwind needing to generate a class for it.
+ *
+ * `src` accepts a local `src/assets` import or any CMS `image` value;
+ * when nothing is set, `SmartImage` renders a neutral block that still fills
+ * the frame, so the grid keeps its shape.
+ */
+export interface Props {
+  src?: ImageMetadata | string | Record<string, unknown> | null;
+  alt?: string;
+  /** Frame proportions, e.g. "4/5". Omit for the image's natural ratio. */
+  ratio?: string;
+  widths?: number[];
+  sizes?: string;
+  width?: number;
+  height?: number;
+  loading?: 'lazy' | 'eager';
+  decoding?: 'async' | 'sync' | 'auto';
+  priority?: boolean;
+  /** Classes for the frame (background, rounding). */
+  class?: string;
+  /** Classes for the image itself. */
+  imgClass?: string;
+}
+
+const {
+  src,
+  alt = '',
+  ratio = '4/5',
+  widths,
+  sizes,
+  width,
+  height,
+  loading = 'lazy',
+  decoding = 'async',
+  priority,
+  class: containerClass,
+  imgClass = 'size-full object-cover',
+} = Astro.props;
+---
+
+<div
+  class:list={['overflow-hidden', containerClass]}
+  style={ratio ? `aspect-ratio: ${ratio}` : undefined}
+>
+  <SmartImage
+    src={src as never}
+    alt={alt}
+    widths={widths}
+    sizes={sizes}
+    width={width}
+    height={height}
+    loading={loading}
+    decoding={decoding}
+    priority={priority}
+    class={imgClass}
+  />
+</div>

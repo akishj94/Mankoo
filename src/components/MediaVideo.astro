@@ -1,0 +1,73 @@
+---
+import { mediaType, mediaUrl } from '../lib/cms';
+
+/**
+ * Reusable video with the frame's aspect ratio fixed in code.
+ *
+ * Like `MediaImage`, the `ratio` prop (for example `"16/9"`, `"4/5"`) is set
+ * by the developer at the call site — it is not a CMS field, so editors can
+ * swap the clip but never break the layout's proportions. The ratio is
+ * applied as an inline `aspect-ratio` style so any value works without
+ * Tailwind needing to generate a class for it.
+ *
+ * `src` accepts a CMS `file` value or a plain URL string (for example a clip
+ * in `public/`). Renders nothing when there is no URL to point at.
+ */
+export interface Props {
+  src: unknown;
+  /** Overrides the MIME type recorded by the CMS, e.g. "video/mp4". */
+  type?: string;
+  /** Frame proportions, e.g. "16/9". Omit for the video's natural ratio. */
+  ratio?: string;
+  autoplay?: boolean;
+  muted?: boolean;
+  loop?: boolean;
+  playsinline?: boolean;
+  preload?: 'auto' | 'metadata' | 'none';
+  poster?: string;
+  /** Announced to assistive tech when the video carries meaning. */
+  label?: string;
+  /** Classes for the frame (background, rounding). */
+  class?: string;
+  /** Classes for the `<video>` element itself. */
+  videoClass?: string;
+}
+
+const {
+  src,
+  type,
+  ratio = '16/9',
+  autoplay = true,
+  muted = true,
+  loop = true,
+  playsinline = true,
+  preload = 'metadata',
+  poster,
+  label,
+  class: containerClass,
+  videoClass = 'absolute inset-0 size-full object-cover',
+} = Astro.props;
+
+const videoSrc = mediaUrl(src);
+const videoType = type ?? mediaType(src);
+---
+
+{videoSrc && (
+  <div
+    class:list={['relative overflow-hidden', containerClass]}
+    style={ratio ? `aspect-ratio: ${ratio}` : undefined}
+  >
+    <video
+      class={videoClass}
+      autoplay={autoplay}
+      muted={muted}
+      loop={loop}
+      playsinline={playsinline}
+      preload={preload}
+      poster={poster}
+      aria-label={label}
+    >
+      <source src={videoSrc} type={videoType || undefined} />
+    </video>
+  </div>
+)}

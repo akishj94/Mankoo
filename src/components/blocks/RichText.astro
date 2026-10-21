@@ -1,0 +1,31 @@
+---
+import { PortableText } from 'emdash/ui';
+import { text, type Block } from '../../lib/cms';
+
+interface Props {
+  value: Block<Record<string, unknown>>;
+}
+
+const { value } = Astro.props;
+const heading = text(value.heading);
+const body = (value.body ?? undefined) as never;
+---
+
+{(heading || body) && (
+  <section class="mx-auto max-w-6xl px-6 py-24">
+    {heading && (
+      <h1 data-reveal class="text-3xl font-semibold tracking-tight light:text-ink">
+        {heading}
+      </h1>
+    )}
+
+    {body && (
+      <div
+        data-reveal
+        class="mt-4 max-w-xl text-neutral-600 prose-emdash"
+      >
+        <PortableText value={body} />
+      </div>
+    )}
+  </section>
+)}

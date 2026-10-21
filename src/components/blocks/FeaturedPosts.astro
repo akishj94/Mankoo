@@ -1,0 +1,47 @@
+---
+import { getEmDashEntry } from 'emdash';
+import FeaturedPosts from '../sections/FeaturedPosts.astro';
+import { getPosts } from '../../lib/queries';
+import { toNewsPost, text, type Block } from '../../lib/cms';
+
+interface Props {
+  value: Block<Record<string, unknown>>;
+}
+
+const { value } = Astro.props;
+
+// EmDash block definitions cannot hold reference fields, so the picker is a
+// repeater of post slugs resolved in order at render time (max 4).
+const slugs = ((value.posts as Record<string, unknown>[] | undefined) ?? [])
+  .map((item) => text(item.slug))
+  .filter(Boolean)
+  .slice(0, 4);
+
+const picked: Parameters<typeof toNewsPost>[0][] = [];
+
+for (const slug of slugs) {
+  try {
+    const { entry } = await getEmDashEntry('posts', slug);
+
+    if (entry) picked.push(entry as unknown as Parameters<typeof toNewsPost>[0]);
+  } catch (err) {
+    console.error(`[cms] Could not load picked post "${slug}":`, err);
+  }
+}
+
+let cards = picked.map(toNewsPost);
+
+if (cards.length === 0) {
+  const { posts } = await getPosts(4);
+
+  cards = posts.map((post) => toNewsPost(post as unknown as Parameters<typeof toNewsPost>[0]));
+}
+---
+
+<FeaturedPosts
+  eyebrow={text(value.eyebrow)}
+  title={text(value.title)}
+  viewAllHref={text(value.view_all_href)}
+  viewAllLabel={text(value.view_all_label)}
+  posts={cards}
+/>

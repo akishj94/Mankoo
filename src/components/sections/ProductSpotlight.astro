@@ -1,0 +1,116 @@
+---
+import type { ImageMetadata } from 'astro';
+import SmartImage from '../SmartImage.astro';
+
+interface Spec {
+  label: string;
+  value: string;
+}
+
+interface Props {
+  eyebrow?: string;
+  title?: string;
+  description?: string;
+  image?: ImageMetadata | string;
+  imageAlt?: string;
+  specs?: Spec[];
+  ctaHref?: string;
+  ctaLabel?: string;
+}
+
+const {
+  eyebrow = '',
+  title = '',
+  description = '',
+  image,
+  imageAlt = '',
+  specs = [],
+  ctaHref = '',
+  ctaLabel = '',
+} = Astro.props;
+---
+
+<section data-featured class="text-white light:text-ink">
+  <div class="container pt-[clamp(48px,4vw,72px)] pb-[clamp(32px,3vw,56px)]">
+    <div class="w-full min-w-0 md:max-w-[50%]" data-reveal>
+      {eyebrow && (
+        <p class="text-[14px] uppercase tracking-[0.2em] text-accent">
+          {eyebrow}
+        </p>
+      )}
+
+      {title && (
+        <h2 class="mt-4 text-[32px] leading-[1.08] tracking-tight text-[clamp(30px,4vw,56.5px)]">
+          {title}
+        </h2>
+      )}
+
+      {description && (
+        <p class="mt-5 text-[13px] md:text-[14px] lg:text-[15px] leading-[1.2] text-white/50 light:text-ink/60 md:max-w-[567px]">
+          {description}
+        </p>
+      )}
+    </div>
+  </div>
+
+  <div class="relative">
+    <div class="relative isolate min-h-[80vh] w-full overflow-hidden bg-neutral-900">
+      <SmartImage
+        src={image}
+        alt={imageAlt}
+        widths={[640, 960, 1280, 1920, 2560]}
+        sizes="100vw"
+        loading="lazy"
+        decoding="async"
+        class="absolute inset-0 -z-10 size-full object-cover"
+      />
+
+      <div
+        class="absolute inset-0 -z-10 bg-gradient-to-t from-black/85 via-black/25 to-black/45"
+        aria-hidden="true"
+      >
+      </div>
+    </div>
+
+    <div class="relative md:absolute md:inset-x-0 md:bottom-0" data-keep-dark>
+      <div class="container pb-10 pt-10 sm:pb-8 sm:pt-12 md:pb-8 md:pt-0 lg:pb-10" data-reveal>
+        
+        <div class="flex flex-col gap-10 md:flex-row md:items-end md:justify-between md:gap-12">
+          {specs.length > 0 && (
+            <div role="list" class="flex flex-col gap-6 md:flex-row md:items-center md:gap-7">
+              {specs.map((spec, index) => (
+                <Fragment>
+                  <div
+                    role="listitem"
+                    class="flex items-baseline justify-between gap-6 border-b border-ink/15 pb-4 md:justify-start md:gap-3 md:border-b-0 md:pb-0"
+                  >
+                    <span class="text-xs uppercase tracking-[0.2em] text-ink/60">
+                      {spec.label}
+                    </span>
+                    <span class="text-[17px] text-ink">{spec.value}</span>
+                  </div>
+
+                  {index < specs.length - 1 && (
+                    <span aria-hidden="true" class="hidden text-ink/40 md:block">|</span>
+                  )}
+                </Fragment>
+              ))}
+            </div>
+          )}
+
+          {ctaHref && (
+            <a
+              href={ctaHref}
+              class="inline-flex min-w-[clamp(220px,15vw,300px)] max-w-[300px] items-end justify-between gap-10 rounded-[10px] px-4 py-4 text-[15px] lg:text-[16px] text-white backdrop-blur-[5px] transition-all duration-250 hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white light:bg-ink light:hover:bg-ink/85 light:focus-visible:outline-ink bg-[rgba(246,246,246,0.2)] md:hover:bg-[rgba(246,246,246,0.35)] light:md:bg-ink light:md:hover:bg-ink/85 aspect-[6/3] max-h-[140px] leading-[1.2]"
+            >
+              <span class="inline-flex max-w-[140px] lg:max-w-[160px]">{ctaLabel}</span>
+              <svg width="15" height="24" class="h-4 w-[15px] shrink-0" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true">
+                <path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z" />
+              </svg>
+            </a>
+          )}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

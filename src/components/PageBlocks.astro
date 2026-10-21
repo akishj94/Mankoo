@@ -1,0 +1,48 @@
+---
+import { Blocks, defineBlockComponents } from 'emdash/ui';
+
+import Hero from './blocks/Hero.astro';
+import Media from './blocks/Media.astro';
+import SplitGrid from './blocks/SplitGrid.astro';
+import Capabilities from './blocks/Capabilities.astro';
+import MachineGrid from './blocks/MachineGrid.astro';
+import FeaturedProduct from './blocks/FeaturedProduct.astro';
+import Reasons from './blocks/Reasons.astro';
+import Testimonial from './blocks/Testimonial.astro';
+import LatestPosts from './blocks/LatestPosts.astro';
+import FeaturedPosts from './blocks/FeaturedPosts.astro';
+import RichText from './blocks/RichText.astro';
+import PageIntro from './blocks/PageIntro.astro';
+import MachineSlider from './blocks/MachineSlider.astro';
+import TeamGrid from './blocks/TeamGrid.astro';
+import Timeline from './blocks/Timeline.astro';
+import CtaBanner from './blocks/CtaBanner.astro';
+import type { Block } from '../lib/cms';
+
+export const blockComponents = defineBlockComponents({
+  hero: Hero,
+  media: Media,
+  split_grid: SplitGrid,
+  capabilities: Capabilities,
+  machine_grid: MachineGrid,
+  machine_slider: MachineSlider,
+  featured_product: FeaturedProduct,
+  reasons: Reasons,
+  testimonial: Testimonial,
+  latest_posts: LatestPosts,
+  featured_posts: FeaturedPosts,
+  rich_text: RichText,
+  page_intro: PageIntro,
+  team_grid: TeamGrid,
+  timeline: Timeline,
+  cta_banner: CtaBanner,
+});
+
+interface Props {
+  layout?: Block<Record<string, unknown>>[] | null;
+}
+
+const { layout } = Astro.props;
+---
+
+<Blocks value={layout ?? []} components={blockComponents} />

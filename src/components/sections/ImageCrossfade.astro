@@ -1,0 +1,260 @@
+---
+import type { ImageMetadata } from 'astro';
+import SmartImage from '../SmartImage.astro';
+
+interface Slide {
+  image?: ImageMetadata | string;
+  alt?: string;
+  title: string;
+  description: string;
+}
+
+interface Props {
+  eyebrow?: string;
+  title?: string;
+  interval?: number;
+  slides: Slide[];
+}
+
+const { eyebrow = '', title = '', interval = 6, slides } = Astro.props;
+
+const columns =
+  slides.length <= 2
+    ? 'sm:grid-cols-2'
+    : slides.length === 3
+      ? 'sm:grid-cols-2 lg:grid-cols-3'
+      : 'sm:grid-cols-2 lg:grid-cols-4';
+
+// Without artwork there is nothing to crossfade between, so the script below
+// bails out and the frame simply sits there until photos are added in the CMS.
+const hasMedia = slides.some((slide) => Boolean(slide.image));
+
+const LAYER = 'absolute inset-0 size-full object-cover';
+
+const layers = slides.map((slide, i) => ({
+  slide,
+  hidden: i === 0 ? undefined : ('true' as string | undefined),
+  class: i === 0 ? `${LAYER} is-active` : LAYER,
+}));
+
+const tabs = slides.map((slide, i) => ({
+  slide,
+  pressed: i === 0 ? 'true' : 'false',
+  tabindex: i === 0 ? 0 : -1,
+}));
+---
+
+<section
+  data-image-transition
+  data-interval={interval}
+  data-has-media={hasMedia ? 'true' : 'false'}
+  class="pt-8 pb-[clamp(76px,5vw,100px)] text-white light:text-ink lg:pt-12"
+>
+  <div class="container">
+    <div data-reveal>
+      {eyebrow && (
+        <p class="text-[12px] uppercase tracking-[0.2em] text-accent">{eyebrow}</p>
+      )}
+
+      {title && (
+        <h2 class="mt-6 text-[clamp(26px,2.5vw,36px)] leading-[1.2] tracking-tight md:max-w-[50%]">
+          {title}
+        </h2>
+      )}
+    </div>
+
+    <div class="mt-10 lg:mt-12" data-reveal>
+      <div data-transition-media class="relative aspect-[1122/475] w-full overflow-hidden bg-ink">
+        {layers.map(({ slide, hidden, class: layerClass }) => (
+          <SmartImage
+            src={slide.image}
+            alt={slide.alt}
+            widths={[640, 1120, 1680, 2240]}
+            sizes="(min-width: 1536px) 1456px, 94vw"
+            loading="lazy"
+            decoding="async"
+            aria-hidden={hidden}
+            data-transition-image
+            class={layerClass}
+          />
+        ))}
+      </div>
+
+      <div
+        data-transition-tabs
+        class:list={['mt-10 grid grid-cols-1 gap-x-[6%] gap-y-8 sm:mt-12', columns]}
+      >
+        {tabs.map(({ slide, pressed, tabindex }) => (
+          <button
+            type="button"
+            data-transition-tab
+            aria-pressed={pressed}
+            tabindex={tabindex}
+            class="group block w-full cursor-pointer text-left focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-white light:focus-visible:outline-ink"
+          >
+            <span class="block text-[18px] leading-snug transition-colors group-hover:text-white/80 light:group-hover:text-ink/70">
+              {slide.title}
+            </span>
+
+            <span class="mt-3 block max-w-[46ch] text-[13px] md:text-[14px] lg:text-[15px] leading-[1.45] text-white/50 light:text-ink/60">
+              {slide.description}
+            </span>
+
+            <span class="relative mt-8 block h-px w-full bg-white/25 light:bg-ink/15">
+              <span
+                data-transition-fill
+                class="absolute top-[-1px] left-0 block h-[3px] w-full origin-left scale-x-0 bg-accent"
+              ></span>
+            </span>
+          </button>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  [data-transition-image] {
+    opacity: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  [data-transition-image].is-active {
+    opacity: 1;
+    z-index: 1;
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+
+  const FADE = 1.2;
+
+  document.querySelectorAll<HTMLElement>('[data-image-transition]').forEach((section) => {
+    if (section.dataset.hasMedia !== 'true') return;
+
+    const images = Array.from(
+      section.querySelectorAll<HTMLImageElement>('[data-transition-image]')
+    );
+    const tabs = Array.from(
+      section.querySelectorAll<HTMLButtonElement>('[data-transition-tab]')
+    );
+    const fills = Array.from(
+      section.querySelectorAll<HTMLElement>('[data-transition-fill]')
+    );
+
+    if (
+      images.length < 2 ||
+      images.length !== tabs.length ||
+      fills.length !== tabs.length
+    ) {
+      return;
+    }
+
+    const seconds = Number(section.dataset.interval);
+    const duration = seconds > 0 ? seconds : 6;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let index = 0;
+    let onScreen = false;
+    let fillTween: ReturnType<typeof gsap.to> | null = null;
+
+    function markActive(next: number) {
+      index = next;
+
+      images.forEach((image, i) => {
+        image.classList.toggle('is-active', i === next);
+        image.setAttribute('aria-hidden', String(i !== next));
+      });
+
+      tabs.forEach((tab, i) => {
+        tab.setAttribute('aria-pressed', String(i === next));
+        tab.tabIndex = i === next ? 0 : -1;
+      });
+    }
+
+    function crossfadeTo(next: number) {
+      gsap.killTweensOf(images);
+      images.forEach((image, i) => {
+        if (i !== next) gsap.set(image, { opacity: 0 });
+      });
+
+      const start = () =>
+        gsap.fromTo(
+          images[next],
+          { opacity: 0 },
+          { opacity: 1, duration: reduced ? 0 : FADE, ease: 'power1.inOut' }
+        );
+
+      const incoming = images[next];
+      if (incoming.complete) start();
+      else incoming.decode().then(start, start);
+    }
+
+    function runFill() {
+      fillTween?.kill();
+      gsap.set(fills, { scaleX: 0 });
+
+      if (reduced || !onScreen) {
+        gsap.set(fills[index], { scaleX: 1 });
+        return;
+      }
+
+      fillTween = gsap.to(fills[index], {
+        scaleX: 1,
+        duration,
+        ease: 'none',
+        onComplete: () => go(index + 1),
+      });
+    }
+
+    function go(next: number) {
+      const target = (next + tabs.length) % tabs.length;
+      markActive(target);
+      crossfadeTo(target);
+      runFill();
+    }
+
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => go(i));
+
+      tab.addEventListener('keydown', (event) => {
+        const last = tabs.length - 1;
+        const targets: Record<string, number> = {
+          ArrowRight: i === last ? 0 : i + 1,
+          ArrowLeft: i === 0 ? last : i - 1,
+          Home: 0,
+          End: last,
+        };
+        const target = targets[event.key];
+        if (target === undefined) return;
+
+        event.preventDefault();
+        go(target);
+        tabs[target].focus();
+      });
+    });
+
+    let inView = false;
+
+    function syncPlayback() {
+      onScreen = inView && !document.hidden;
+      runFill();
+    }
+
+    new IntersectionObserver(
+      ([entry]) => {
+        inView = entry.isIntersecting;
+        syncPlayback();
+      },
+      { threshold: 0.25 }
+    ).observe(section);
+
+    document.addEventListener('visibilitychange', syncPlayback);
+
+    markActive(0);
+    gsap.set(images, { opacity: 0 });
+    gsap.set(images[0], { opacity: 1 });
+  });
+</script>

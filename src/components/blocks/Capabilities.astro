@@ -1,0 +1,30 @@
+---
+import ImageCrossfade from '../sections/ImageCrossfade.astro';
+import { homeCapabilities } from '../../lib/fallbacks';
+import { num, text, type Block } from '../../lib/cms';
+
+interface Props {
+  value: Block<Record<string, unknown>>;
+}
+
+const { value } = Astro.props;
+
+const authored = (value.slides as Record<string, unknown>[] | undefined) ?? [];
+const picked = authored
+  .map((slide) => ({
+    image: slide.image as never,
+    alt: text(slide.alt),
+    title: text(slide.title),
+    description: text(slide.description),
+  }))
+  .filter((slide) => slide.title || slide.image);
+
+const slides = picked.length > 0 ? picked : homeCapabilities;
+---
+
+<ImageCrossfade
+  eyebrow={text(value.eyebrow)}
+  title={text(value.title)}
+  interval={num(value.interval, 6)}
+  {slides}
+/>

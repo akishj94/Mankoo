@@ -1,0 +1,85 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageBlocks from '../components/PageBlocks.astro';
+import Media from '../components/Media.astro';
+import Pagination from '../components/Pagination.astro';
+import { getPage, getPosts } from '../lib/queries';
+import { text } from '../lib/cms';
+
+const POSTS_PER_PAGE = 12;
+
+const [{ entry: pageEntry, cacheHint: pageHint }, { posts, cacheHint }] = await Promise.all([
+  getPage('blog'),
+  getPosts(),
+]);
+
+if (Astro.cache?.enabled) {
+  if (pageHint) Astro.cache.set(pageHint);
+  if (cacheHint) Astro.cache.set(cacheHint);
+}
+const layout = pageEntry?.data.layout;
+const totalPages = Math.max(1, Math.ceil(posts.length / POSTS_PER_PAGE));
+const requested = Number.parseInt(Astro.url.searchParams.get('page') ?? '1', 10);
+const page = Math.min(Math.max(Number.isNaN(requested) ? 1 : requested, 1), totalPages);
+const pagePosts = posts.slice((page - 1) * POSTS_PER_PAGE, page * POSTS_PER_PAGE);
+
+const pageUrl = (target: number) => (target <= 1 ? '/blog' : `/blog?page=${target}`);
+
+const formatDate = (iso?: string) => {
+  if (!iso) return '';
+  const date = new Date(iso);
+  return Number.isNaN(date.getTime())
+    ? ''
+    : date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+};
+---
+
+<Layout title={text(pageEntry?.data.title, 'News')} description={pageEntry?.data.description}>
+  {layout?.length > 0 && <PageBlocks layout={layout} />}
+  <section class="container py-24">  
+
+    {posts.length === 0 && (
+      <p data-reveal class="mt-16 text-sm text-neutral-500">
+        No posts have been published yet.
+      </p>
+    )}
+
+    <div class="mt-16 grid grid-cols-1 gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
+      {pagePosts.map((post) => (
+        <a
+          href={`/blog/${post.id}`}
+          class="group/post block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
+        >
+          <Media
+            image={post.data.cover_image ?? null}
+            alt={text(post.data.cover_alt, text(post.data.title))}
+            ratio="16/9"
+            widths={[408, 640, 816]}
+            sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+            loading="lazy"
+            decoding="async"
+            class="bg-neutral-100"
+            mediaClass="size-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover/post:scale-110 group-focus-visible/post:scale-110"
+          />
+
+          <p class="mt-6 text-[11px] uppercase tracking-[0.2em] text-neutral-500">
+            {[text(post.data.category), text(post.data.read_time), formatDate(post.data.published_at)].filter(Boolean).join(' · ')}
+          </p>
+
+          <h2 class="mt-5 text-[20px] tracking-tight text-white">
+            {text(post.data.title)}
+          </h2>
+
+          {post.data.excerpt && (
+            <p class="mt-2 max-w-[42ch] text-[15px] leading-[1.2] text-white/50">
+              {post.data.excerpt}
+            </p>
+          )}
+        </a>
+      ))}
+    </div>
+
+    {totalPages > 1 && <Pagination page={page} totalPages={totalPages} getHref={pageUrl} />}
+  </section>
+</Layout>
+

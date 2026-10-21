@@ -1,0 +1,168 @@
+---
+import type { ImageMetadata } from 'astro';
+import SmartImage from './SmartImage.astro';
+import { mediaType, mediaUrl } from '../lib/cms';
+
+/**
+ * Reusable media frame: pass an image, a video, or both. The video wins when
+ * set (matching the hero, where a `file` clip beats the `image` still), and
+ * the hero's play/pause control — progress ring, play/pause icons, reduced
+ * motion handling — only renders with a clip.
+ *
+ * Like `MediaImage`/`MediaVideo`, the `ratio` prop (for example `"16/9"`,
+ * `"4/5"`, `"1/1"`) is set by the developer at the call site, not a CMS
+ * field, so editors can swap media without breaking the proportions.
+ */
+export interface Props {
+  /** A CMS `image` value or local asset. Ignored when `video` is set. */
+  image?: ImageMetadata | string | Record<string, unknown> | null;
+  /** A CMS `file` value or plain URL string. Renders nothing without a URL. */
+  video?: unknown;
+  /** Overrides the MIME type recorded by the CMS, e.g. "video/mp4". */
+  videoType?: string;
+  alt?: string;
+  /** Frame proportions, e.g. "16/9". Omit for the natural ratio. */
+  ratio?: string;
+  widths?: number[];
+  sizes?: string;
+  width?: number;
+  height?: number;
+  loading?: 'lazy' | 'eager';
+  decoding?: 'async' | 'sync' | 'auto';
+  priority?: boolean;
+  autoplay?: boolean;
+  muted?: boolean;
+  loop?: boolean;
+  playsinline?: boolean;
+  preload?: 'auto' | 'metadata' | 'none';
+  poster?: string;
+  /** Describes the clip in the toggle's accessible name, e.g. "Pause showreel". */
+  label?: string;
+  /** Classes for the frame (background, rounding). */
+  class?: string;
+  /** Classes for the `<video>` / image element itself. */
+  mediaClass?: string;
+  /** Classes for the play/pause toggle button. */
+  toggleClass?: string;
+}
+
+const {
+  image,
+  video,
+  videoType,
+  alt = '',
+  ratio = '16/9',
+  widths,
+  sizes,
+  width,
+  height,
+  loading = 'lazy',
+  decoding = 'async',
+  priority,
+  autoplay = true,
+  muted = true,
+  loop = true,
+  playsinline = true,
+  preload = 'metadata',
+  poster,
+  label = 'video',
+  class: containerClass,
+  mediaClass = 'absolute inset-0 size-full object-cover',
+  toggleClass,
+} = Astro.props;
+
+const videoSrc = mediaUrl(video);
+const videoMime = videoType ?? mediaType(video);
+
+// One medium per frame: the clip wins when an editor sets both.
+const imageSrc = !videoSrc ? (image ?? null) : null;
+
+const frameStyle = ratio ? `aspect-ratio: ${ratio}` : undefined;
+---
+
+{videoSrc ? (
+  <div
+    class:list={['relative overflow-hidden', containerClass]}
+    style={frameStyle}
+    data-video-player
+    data-video-label={label}
+  >
+    <video
+      class={mediaClass}
+      autoplay={autoplay}
+      muted={muted}
+      loop={loop}
+      playsinline={playsinline}
+      preload={preload}
+      poster={poster}
+      aria-label={label === 'video' ? undefined : label}
+    >
+      <source src={videoSrc} type={videoMime || undefined} />
+    </video>
+
+    <button
+      type="button"
+      data-video-toggle
+      aria-label={`Pause ${label}`}
+      aria-pressed="false"
+      class:list={[
+        'absolute bottom-3 right-3 z-10 grid size-10 cursor-pointer place-items-center rounded-full bg-black/40 text-white backdrop-blur-[0.5rem] transition-colors hover:bg-black/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white',
+        toggleClass,
+      ]}
+    >
+      <svg
+        class="pointer-events-none absolute inset-0 size-full -rotate-90"
+        viewBox="0 0 40 40"
+        fill="none"
+        aria-hidden="true"
+      >
+        <circle
+          cx="20"
+          cy="20"
+          r="19"
+          stroke="currentColor"
+          stroke-opacity="0.35"
+          stroke-width="2"
+        />
+        <circle
+          data-video-progress
+          cx="20"
+          cy="20"
+          r="19"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-dasharray="119.38"
+          stroke-dashoffset="119.38"
+        />
+      </svg>
+
+      <svg data-icon-pause width="13" height="13" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true">
+        <rect x="3" y="2" width="3" height="10" rx="1" />
+        <rect x="8" y="2" width="3" height="10" rx="1" />
+      </svg>
+
+      <svg data-icon-play class="hidden" width="13" height="13" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true">
+        <path d="M4 2.5v9a.6.6 0 0 0 .92.5l7-4.5a.6.6 0 0 0 0-1l-7-4.5A.6.6 0 0 0 4 2.5Z" />
+      </svg>
+    </button>
+  </div>
+) : (
+  <div
+    class:list={['relative overflow-hidden', containerClass]}
+    style={frameStyle}
+  >
+    <SmartImage
+      src={imageSrc as never}
+      alt={alt}
+      widths={widths}
+      sizes={sizes}
+      width={width}
+      height={height}
+      loading={loading}
+      decoding={decoding}
+      priority={priority}
+      class={mediaClass}
+    />
+  </div>
+)}

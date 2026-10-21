@@ -45,10 +45,18 @@ function initRevealAnimations() {
   });
 }
 
-function initHeroVideo() {
-  const video = document.querySelector('[data-hero-video]');
-  const toggle = document.querySelector('[data-video-toggle]');
+/**
+ * Wires every `[data-video-player]` on the page — the hero background clip and
+ * any `Media` video frame. Each root owns its `<video>` plus its
+ * `[data-video-toggle]` button (progress ring, play/pause icons), so any
+ * number of players can coexist; a guard keeps re-runs idempotent.
+ */
+function initVideoPlayer(root) {
+  const video = root.querySelector('video');
+  const toggle = root.querySelector('[data-video-toggle]');
   if (!video || !toggle) return;
+
+  const label = root.dataset.videoLabel || 'video';
 
   const ring = toggle.querySelector('[data-video-progress]');
   const playIcon = toggle.querySelector('[data-icon-play]');
@@ -70,7 +78,7 @@ function initHeroVideo() {
   }
 
   function setPlaying(isPlaying) {
-    toggle.setAttribute('aria-label', `${isPlaying ? 'Pause' : 'Play'} background video`);
+    toggle.setAttribute('aria-label', `${isPlaying ? 'Pause' : 'Play'} ${label}`);
     toggle.setAttribute('aria-pressed', String(!isPlaying));
 
     playIcon.classList.toggle('hidden', isPlaying);
@@ -117,26 +125,37 @@ function initHeroVideo() {
   applyMotionPreference();
 }
 
-/**
- * Fixed header — slides away as you scroll down and returns when scrolling up.
- */
+function initVideoPlayers() {
+  document.querySelectorAll('[data-video-player]').forEach((root) => {
+    if (root.hasAttribute('data-video-player-init')) return;
+    root.setAttribute('data-video-player-init', '');
+    initVideoPlayer(root);
+  });
+}
+
+/** Fixed header — slides away as you scroll down and returns when scrolling up. */
 function initHeader() {
   const header = document.querySelector('[data-header]');
   if (!header) return;
 
   const move = gsap.quickTo(header, 'yPercent', { duration: 0.4, ease: 'power3.out' });
   let lastY = 0;
+  let visible = true;
 
   function update(y) {
-    // Drives the header scrim, which stays hidden at the top of the page.
-    header.toggleAttribute('data-scrolled', y > 8);
-
     if (y <= 0) {
-      move(0); // always visible at the top of the page
+      visible = true;
+      move(0);
     } else if (Math.abs(y - lastY) > 4) {
       // 4px threshold keeps trackpad jitter from flickering the header
-      move(y > lastY ? -100 : 0);
+      visible = y <= lastY;
+      move(visible ? 0 : -100);
     }
+
+    // The scrim is a pseudo-element on the header, so it travels with it. Only
+    // show it while the header is on screen, otherwise a sliver of the gradient
+    // stays pinned to the top of the viewport after it slides away.
+    header.toggleAttribute('data-scrolled', visible && y > 8);
     lastY = y;
   }
 
@@ -159,8 +178,8 @@ function initMobileNav() {
 
   const desktop = window.matchMedia('(min-width: 992px)');
 
-  // The slide itself is a CSS transition on .mobile-nav — all this needs to
-  // do is flip the state attribute that drives it.
+  // The slide itself is a Tailwind transition on [data-mobile-nav] — all this
+  // needs to do is flip the state attribute that drives it.
   function setOpen(open) {
     toggle.setAttribute('aria-expanded', String(open));
     toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
@@ -185,12 +204,51 @@ function initMobileNav() {
       { passive: true }
     );
   }
+
+  // Submenu accordions inside the mobile panel — click only, no image. Only
+  // one stays open at a time so the list stays scannable.
+  const groups = Array.from(panel.querySelectorAll('[data-mobile-group]'));
+
+  groups.forEach((groupEl) => {
+    const toggleButton = groupEl.querySelector('[data-mobile-submenu-toggle]');
+    const submenu = groupEl.querySelector('[data-mobile-submenu]');
+    if (!toggleButton || !submenu) return;
+
+    const isExpanded = () => toggleButton.getAttribute('aria-expanded') === 'true';
+
+    const setExpanded = (expanded) => {
+      toggleButton.setAttribute('aria-expanded', String(expanded));
+      toggleButton.setAttribute(
+        'aria-label',
+        `${expanded ? 'Hide' : 'Show'} ${groupEl.querySelector('a')?.textContent?.trim() ?? 'submenu'} submenu`
+      );
+      if (expanded) {
+        submenu.removeAttribute('hidden');
+      } else {
+        submenu.setAttribute('hidden', '');
+      }
+    };
+
+    toggleButton.addEventListener('click', () => {
+      const next = !isExpanded();
+      groups.forEach((other) => {
+        if (other === groupEl) return;
+        const otherToggle = other.querySelector('[data-mobile-submenu-toggle]');
+        const otherSubmenu = other.querySelector('[data-mobile-submenu]');
+        if (otherToggle && otherSubmenu) {
+          otherToggle.setAttribute('aria-expanded', 'false');
+          otherSubmenu.setAttribute('hidden', '');
+        }
+      });
+      setExpanded(next);
+    });
+  });
 }
 
 export function initAnimations() {
   syncScrollTriggerWithLenis();
   initRevealAnimations();
-  initHeroVideo();
+  initVideoPlayers();
   initHeader();
   initMobileNav();
 }

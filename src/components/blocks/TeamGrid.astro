@@ -1,0 +1,34 @@
+---
+import TeamGrid from '../sections/TeamGrid.astro';
+import { teamFallbackMembers } from '../../lib/fallbacks';
+import { text } from '../../lib/cms';
+import type { Block } from '../../lib/cms';
+
+interface Props {
+  value: Block<Record<string, unknown>>;
+}
+
+const { value } = Astro.props;
+
+const authored = (value.members as Record<string, unknown>[] | undefined) ?? [];
+const picked = authored
+  .map((member) => ({
+    photo: member.photo as never,
+    photoAlt: text(member.photo_alt),
+    name: text(member.name),
+    role: text(member.role),
+    linkedinHref: text(member.linkedin_href),
+    linkedinLabel: text(member.linkedin_label),
+  }))
+  .filter((member) => member.name || member.photo);
+
+const members = picked.length > 0 ? picked : teamFallbackMembers;
+---
+
+<TeamGrid
+  eyebrow={text(value.eyebrow)}
+  title={text(value.title)}
+  {members}
+  linkHref={text(value.link_href)}
+  linkLabel={text(value.link_label)}
+/>

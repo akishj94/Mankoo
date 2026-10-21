@@ -1,20 +1,52 @@
 @import "tailwindcss";
 
+/* Class-based light theme. Dark is the default (no class) so the current
+   look is untouched; adding `.light` to <html> activates `light:` variants. */
+@custom-variant light (&:where(.light, .light *));
+
 /* ------------------------------------------------------------------ */
 /* Custom CSS — anything that doesn't fit neatly as a Tailwind utility */
 /* ------------------------------------------------------------------ */
 :root {
+  color-scheme: dark;
   --container-margin: clamp(1rem, 0.7857rem + 1.0714vw, 2.5rem);
   --container-max-width: 160rem;
   --color-body-bg: #000A22;
   --color-body-text: #ffffff;
   --color-accent: #F98343;
   --header-height: 68px;
+}
 
-  /* Overlay gradient stops. The transparent stop keeps the same hue so the
-     fade doesn't drift through grey. */
-  --swatch--dark-900: #000a22;
-  --swatch--transparent: #000a2200;
+html.light {
+  color-scheme: light;
+  --color-body-bg: #f6f6f4;
+  --color-body-text: #000a22;
+}
+
+/* Light theme — softens the dark radial washes so they read on a light page.
+   Text/border flips live next to the markup via `light:` variants; only the
+   gradient backgrounds need overriding here because they are arbitrary values.
+   Anything marked data-keep-dark (hero, photo overlays) is left alone
+   because it sits on imagery, not the page background. */
+html.light :where([data-split-grid]:not([data-keep-dark])) {
+  background: linear-gradient(180deg, #ffffff 0%, #eef1f6 100%);
+}
+html.light :where([data-testimonial-card]:not([data-keep-dark])) {
+  background: linear-gradient(135deg, #ffffff 0%, #e8edf5 100%);
+}
+
+/* Light theme: the fixed header sits over the dark hero video on the home
+   page, so its scrim stays on (white wash) — otherwise the ink-coloured nav
+   would land on dark video. Higher specificity than the utility rules so it
+   wins regardless of stylesheet order. */
+html.light header[data-header]::before {
+  opacity: 1;
+}
+html.light header[data-header][data-scrolled]::before {
+  opacity: 0.6;
+}
+html.light header[data-header][data-menu-open]::before {
+  display: none;
 }
 
 @utility container {
@@ -36,6 +68,63 @@
   --color-accent: #f98343;
   --color-muted: #616161;
 }
+
+/* Styling for Portable Text written in the CMS (blog bodies and the Rich text
+   block). Portable Text emits bare elements, so the spacing and type scale have
+   to be applied here rather than with utilities on the wrapper. */
+.prose-emdash > * + * {
+  margin-top: 1.15em;
+}
+
+.prose-emdash h2 {
+  margin-top: 2em;
+  font-size: 1.5rem;
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--color-ink);
+}
+
+.prose-emdash h3 {
+  margin-top: 1.75em;
+  font-size: 1.25rem;
+  line-height: 1.25;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.prose-emdash ul,
+.prose-emdash ol {
+  padding-left: 1.35em;
+}
+
+.prose-emdash ul {
+  list-style: disc;
+}
+
+.prose-emdash ol {
+  list-style: decimal;
+}
+
+.prose-emdash li + li {
+  margin-top: 0.5em;
+}
+
+.prose-emdash a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.prose-emdash blockquote {
+  border-left: 2px solid var(--color-accent);
+  padding-left: 1.15em;
+  font-style: italic;
+}
+
+.prose-emdash img {
+  border-radius: 0.5rem;
+}
 html.lenis {
   height: auto;
 }
@@ -55,85 +144,4 @@ html.lenis {
 body {
   background-color: var(--color-body-bg);
   color: var(--color-body-text);
-}
-
-.site-header::before {
-  content: '';
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 100%;
-  box-sizing: content-box;
-  padding: 0 0 10%;
-  background-image: linear-gradient(180deg, var(--swatch--dark-900), var(--swatch--transparent));
-  opacity: 0;
-  pointer-events: none;
-  z-index: -1;
-  transition: opacity 0.3s ease;
-}
-
-/* The scrim only earns its keep once content sits behind the bar — at the top
-   of the page nothing is underneath it. The overlay rides along with the
-   header, so it is also off-screen whenever the header slides away. */
-.site-header[data-scrolled]::before {
-  opacity: 0.4;
-}
-
-/* Mobile panel — animated with a CSS transform rather than GSAP, so the
-   no-JS fallback and the JS-toggled state share one mechanism.
-   will-change keeps the full-screen panel on its own compositor layer. */
-.mobile-nav {
-  transform: translateY(-100%);
-  transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1);
-  will-change: transform;
-}
-
-.site-header[data-menu-open] .mobile-nav {
-  transform: translateY(0);
-}
-
-/* Hamburger bars. Absolutely centred so both rotate about the same point and
-   cross cleanly into an X. margin-top pulls a 1px bar onto the true centre. */
-.menu-bar {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  width: 32px;
-  height: 1px;
-  margin-top: -0.5px;
-  background: currentColor;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.menu-bar:nth-of-type(1) {
-  transform: translateY(-4px);
-}
-
-.menu-bar:nth-of-type(2) {
-  transform: translateY(4px);
-}
-
-.site-header[data-menu-open] .menu-bar:nth-of-type(1) {
-  transform: rotate(45deg);
-}
-
-.site-header[data-menu-open] .menu-bar:nth-of-type(2) {
-  transform: rotate(-45deg);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .mobile-nav,
-  .menu-bar,
-  .site-header::before {
-    transition: none;
-  }
-}
-
-/* Only while the mobile panel is slid down: solid body colour replaces the
-   translucent overlay, otherwise the two would stack. */
-.site-header[data-menu-open] {
-  background-color: var(--color-body-bg);
-}
-
-.site-header[data-menu-open]::before {
-  display: none;
 }

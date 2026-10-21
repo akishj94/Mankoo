@@ -1,0 +1,88 @@
+---
+import type { ImageMetadata } from 'astro';
+import SmartImage from '../SmartImage.astro';
+
+interface Props {
+  quote?: string;
+  name?: string;
+  role?: string;
+  company?: string;
+  location?: string;
+  logo?: ImageMetadata | string;
+  logoAlt?: string;
+  image?: ImageMetadata | string;
+  imageAlt?: string;
+}
+
+const {
+  quote = '',
+  name = '',
+  role = '',
+  company = '',
+  location = '',
+  logo,
+  logoAlt = '',
+  image,
+  imageAlt = '',
+} = Astro.props;
+
+const byline = [role, company].filter(Boolean).join(', ');
+---
+
+<section
+  data-testimonial
+  class="border-b-2 border-[#242B3C] light:border-ink/10 pb-[clamp(76px,5vw,100px)] text-white light:text-ink"
+>
+  <div class="container pt-[clamp(48px,4vw,72px)]">
+    <div class="grid grid-cols-1 gap-5 lg:grid-cols-[65fr_35fr]" data-reveal>
+      <div
+        data-testimonial-card
+        class="flex min-h-[380px] flex-col justify-end bg-[radial-gradient(101.56%_101.56%_at_87.18%_7.03%,#002888_8.85%,#000A22_100%)] p-8 sm:p-10 lg:min-h-[540px] lg:p-14"
+      >
+        <div class="max-w-[46ch]">
+          {quote && (
+            <blockquote class="text-[20px] lg:text-[22px] leading-[1.4] text-white light:text-ink">
+              <p>{quote}</p>
+            </blockquote>
+          )}
+          {(name || byline || location) && (
+            <div class="mt-10">
+              {name && <p class="text-[15px] lg:text-[18px] text-[#8F8F8F] light:text-ink">{name}</p>}
+              {(byline || location) && (
+                <p class="mt-1 text-[15px] lg:text-[18px] leading-[1.5] text-[#8F8F8F] light:text-ink/60">
+                  {byline}
+                  {byline && location && <br />}
+                  {location}
+                </p>
+              )}
+            </div>
+          )}
+
+          {logo && (
+            <SmartImage
+              src={logo}
+              alt={logoAlt}
+              width={220}
+              height={48}
+              loading="lazy"
+              decoding="async"
+              class="mt-8 h-8 w-auto opacity-70"
+            />
+          )}
+        </div>
+      </div>
+
+      <div class="relative min-h-[300px] overflow-hidden bg-neutral-100 lg:min-h-0">
+        <SmartImage
+          src={image}
+          alt={imageAlt}
+          widths={[360, 540, 720]}
+          sizes="(min-width: 1024px) 35vw, 100vw"
+          loading="lazy"
+          decoding="async"
+          class="size-full object-cover"
+        />
+      </div>
+    </div>
+  </div>
+</section>

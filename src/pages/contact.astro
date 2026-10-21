@@ -1,10 +1,25 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import PageBlocks from '../components/PageBlocks.astro';
+import SiteDetails from '../components/sections/SiteDetails.astro';
+import { getPage } from '../lib/queries';
+import { getSiteDetails } from '../lib/site';
+import { placeholderLayout } from '../lib/fallbacks';
+import { text } from '../lib/cms';
+
+// Generic copy for a page with no CMS entry yet — nothing here is specific to
+// this route; the real intro comes from the `page_intro` block in the layout.
+const FALLBACK = placeholderLayout('Welcome', 'This page is being written. Please check back shortly.');
+
+const [{ entry: page, cacheHint }, details] = await Promise.all([getPage('contact'), getSiteDetails()]);
+
+if (Astro.cache?.enabled && cacheHint) Astro.cache.set(cacheHint);
+
+const layout = page?.data.layout;
 ---
 
-<Layout title="Contact">
-  <section class="mx-auto max-w-6xl px-6 py-24">
-    <h1 data-reveal class="text-3xl font-semibold tracking-tight">Contact</h1>
-    <p data-reveal class="mt-4 max-w-xl text-neutral-600">Contact form/details go here.</p>
-  </section>
+<Layout title={text(page?.data.title)} description={page?.data.description}>
+  <PageBlocks layout={layout?.length ? layout : FALLBACK} />
+  {/* Address and contact details from `site_details`, as the row beneath the intro. */}
+  <SiteDetails {details} />
 </Layout>

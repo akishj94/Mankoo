@@ -1,0 +1,78 @@
+---
+import type { SiteDetails } from '../../lib/site';
+
+interface Props {
+  details: SiteDetails;
+}
+
+// The contact page's next row: the headquarters address and contact lines are
+// read from the `site_details` collection rather than authored in the page
+// layout, and render as divider rows beneath the intro. Emails and phone
+// numbers become mailto:/tel: links automatically.
+const { details } = Astro.props;
+
+const contactLines = [
+  ...(details.email
+    ? [
+        {
+          label: 'General Enquiries',
+          value: { text: details.email, href: `mailto:${details.email}` },
+        },
+      ]
+    : []),
+  ...details.phones.map((phone) => ({
+    label: 'Telephone',
+    value: { text: phone.display, href: `tel:${phone.number}` },
+  })),
+];
+
+const rows = [
+  ...(details.address
+    ? [{ labels: ['Headquarters'], values: [{ text: details.address, href: '' }] }]
+    : []),
+  ...(contactLines.length > 0
+    ? [
+        {
+          labels: contactLines.map((line) => line.label),
+          values: contactLines.map((line) => line.value),
+        },
+      ]
+    : []),
+];
+
+const linkClass =
+  'transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white light:hover:text-ink light:focus-visible:outline-ink';
+---
+
+{
+  rows.length > 0 && (
+    <section data-site-details class="text-white light:text-ink">
+      <div class="container pb-[clamp(3rem,5vw,6rem)]">
+        <dl class="text-[15px] leading-[1.5]" data-reveal>
+          {rows.map((row) => (
+            <div class="grid grid-cols-1 gap-x-8 gap-y-2 border-t border-[#242B3C] light:border-ink/10 py-8 last:pb-0 sm:grid-cols-2">
+              <dt class="text-white light:text-ink">
+                {row.labels.map((label) => (
+                  <span class="block">{label}</span>
+                ))}
+              </dt>
+              <dd class="text-white/60 light:text-ink/60">
+                {row.values.map((value) => (
+                  <span class="block">
+                    {value.href ? (
+                      <a href={value.href} class={linkClass}>
+                        {value.text}
+                      </a>
+                    ) : (
+                      value.text
+                    )}
+                  </span>
+                ))}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </section>
+  )
+}

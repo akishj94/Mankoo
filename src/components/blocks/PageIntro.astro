@@ -1,0 +1,16 @@
+---
+import PageIntro from '../sections/PageIntro.astro';
+import { text, type Block } from '../../lib/cms';
+
+interface Props {
+  value: Block<Record<string, unknown>>;
+}
+
+const { value } = Astro.props;
+---
+
+<PageIntro
+  eyebrow={text(value.eyebrow)}
+  title={text(value.title)}
+  content={text(value.content)}
+/>

@@ -1,17 +1,32 @@
 ---
-const machineLinks = [
-  { label: 'Type A', href: '/machines/type-a' },
-  { label: 'Type B', href: '/machines/type-b' },
-];
+import { getSiteData, whatsappLink } from '../lib/site';
+import SmartImage from './SmartImage.astro';
+import ThemeToggle from './ThemeToggle.astro';
 
-// TODO: replace with the real company number — international format, digits only, no "+"
-const whatsappNumber = '00000000000';
-const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-  'Hello Mankoo, I would like to know more about your machines.'
-)}`;
+const { primary, details } = await getSiteData();
+const whatsappUrl = whatsappLink(details);
+
+const PANEL_PARENT_URLS = ['/machines'];
+
+const isPanelParent = (url: string) =>
+  PANEL_PARENT_URLS.some((prefix) => url === prefix || url.startsWith(`${prefix}/`));
+
+const visibleChildren = (children: { url: string }[]) => children.filter((child) => child.url !== '');
+
+const navLinkBase =
+  'rounded-lg px-3 py-2 transition-[background-color,color,backdrop-filter] duration-300 ease-out hover:bg-white/10 hover:backdrop-blur-[5px] focus-visible:bg-white/10 focus-visible:backdrop-blur-[5px] focus-visible:outline-none light:hover:bg-ink/5 light:focus-visible:bg-ink/5 motion-reduce:transition-none';
+const navLinkOpen =
+  'group-hover/dropdown:bg-white/10 group-hover/dropdown:backdrop-blur-[5px] group-focus-within/dropdown:bg-white/10 group-focus-within/dropdown:backdrop-blur-[5px] light:group-hover/dropdown:bg-ink/5 light:group-focus-within/dropdown:bg-ink/5';
+
+// Plain rows inside the light panels / lists.
+const panelRow =
+  'block rounded-lg transition-colors duration-200 ease-out hover:bg-[#000a22]/5 focus-visible:bg-[#000a22]/5 focus-visible:outline-none motion-reduce:transition-none';
 ---
 
-<header data-header class="site-header fixed inset-x-0 top-0 z-50 isolate">
+<header
+  data-header
+  class="group/header fixed inset-x-0 top-0 z-50 isolate text-white light:text-ink data-[menu-open]:bg-ink data-[menu-open]:light:bg-white data-[menu-open]:text-white data-[menu-open]:light:text-ink before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:-z-[1] before:box-content before:h-full before:pb-[10%] before:bg-linear-to-b before:from-[#000a22] before:to-[#000a2200] before:opacity-0 before:transition-opacity before:duration-300 before:ease-out before:content-[''] before:light:from-white before:light:to-[#ffffff00] data-[scrolled]:before:opacity-40 data-[menu-open]:before:hidden motion-reduce:before:transition-none"
+>
   <div
     class="container relative z-10 grid h-[var(--header-height)] grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-4"
   >
@@ -21,45 +36,94 @@ const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
         alt="Mankoo"
         width="35"
         height="14"
-        class="h-5 w-auto"
+        class="h-5 w-auto light:brightness-0"
       />
     </a>
 
-    <!-- Desktop navigation (992px and up) -->
-    <nav class="col-start-2 hidden items-center justify-center gap-8 text-sm min-[992px]:flex">
-      <a href="/about" class="hover:text-neutral-500">About</a>
+    <nav class="col-start-2 hidden items-center justify-center gap-2 text-sm min-[992px]:flex" aria-label="Primary">
+      {primary.map((item) => {
+        const children = visibleChildren(item.children);
+        const hasChildren = children.length > 0;
+        const showPanel = hasChildren && isPanelParent(item.url);
 
-      <div class="group relative">
-        <button
-          type="button"
-          class="flex items-center gap-1 hover:text-neutral-500"
-          aria-haspopup="true"
-          aria-expanded="false"
-        >
-          Machines
-          <svg width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
-            <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" />
-          </svg>
-        </button>
+        return hasChildren ? (
+          <div class:list={['group/dropdown', !showPanel && 'relative']} data-nav-dropdown>
+            <a href={item.url} class:list={[navLinkBase, navLinkOpen, 'flex cursor-pointer items-center gap-1.5']} aria-haspopup="true">
+              {item.label}
+              <svg
+                width="12"
+                height="7"
+                viewBox="0 0 12 7"
+                fill="none"
+                aria-hidden="true"
+                class="shrink-0 transition-transform duration-300 ease-out group-hover/dropdown:rotate-180 group-focus-within/dropdown:rotate-180 motion-reduce:transition-none"
+              >
+                <path d="M1 1.25l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </a>
 
-        <ul
-          class="invisible absolute left-0 top-full mt-2 w-40 rounded-md border border-white/10 bg-[var(--color-body-bg)] py-2 opacity-0 shadow-lg transition group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100"
+            {showPanel ? (
+  <div
+    role="menu"
+    aria-label={`${item.label} submenu`}
+    class="absolute left-1/2 top-full z-20 flex w-[min(800px,calc(100vw-2rem))] -translate-x-1/2 translate-y-2 items-start gap-6 rounded-md bg-white p-6 text-ink opacity-0 shadow-[0_32px_80px_-16px_rgba(0,10,34,0.45)] invisible before:absolute before:inset-x-0 before:-top-6 before:h-6 before:content-[''] transition-[opacity,transform,visibility] duration-300 ease-out [transition-behavior:allow-discrete] group-hover/dropdown:visible group-hover/dropdown:translate-y-0 group-hover/dropdown:opacity-100 group-focus-within/dropdown:visible group-focus-within/dropdown:translate-y-0 group-focus-within/dropdown:opacity-100 motion-reduce:transition-none"
+  >
+    <div class="grid flex-1 grid-cols-2 content-start gap-x-6 gap-y-3">
+      {children.map((child) => (
+        <a
+          href={child.url}
+          role="menuitem"
+          class="block text-[1.0625rem] leading-[1] font-medium tracking-tight text-ink transition-colors hover:text-accent"
         >
-          {machineLinks.map((link) => (
-            <li>
-              <a href={link.href} class="block px-4 py-2 hover:bg-white/5">
-                {link.label}
-              </a>
-            </li>
-          ))}
-        </ul>
+          {child.label}
+        </a>
+      ))}
+    </div>
+
+    {details.menuImage && (
+      <div
+        class="w-[clamp(240px,30vw,324px)] shrink-0 overflow-hidden rounded-sm bg-ink"
+        aria-hidden="true"
+      >
+        <SmartImage
+          src={details.menuImage}
+          alt=""
+          width={648}
+          height={754}
+          sizes="(min-width: 992px) 30vw, 0px"
+          loading="lazy"
+          decoding="async"
+          class="aspect-[324/377] size-full object-cover object-center"
+        />
       </div>
-
-      <a href="/news" class="hover:text-neutral-500">News</a>
-      <a href="/contact" class="hover:text-neutral-500">Contact</a>
+    )}
+  </div>
+) : (
+              <ul
+                class="absolute left-0 top-full z-20 min-w-44 rounded-xl bg-white p-2 pt-[calc(0.5rem+10px)] text-ink opacity-0 shadow-[0_24px_60px_-16px_rgba(0,10,34,0.4)] invisible translate-y-2 transition-[opacity,transform,visibility] duration-300 ease-out [transition-behavior:allow-discrete] group-hover/dropdown:visible group-hover/dropdown:translate-y-0 group-hover/dropdown:opacity-100 group-focus-within/dropdown:visible group-focus-within/dropdown:translate-y-0 group-focus-within/dropdown:opacity-100 motion-reduce:transition-none"
+                role="menu"
+                aria-label={`${item.label} submenu`}
+              >
+                {children.map((child) => (
+                  <li role="none">
+                    <a href={child.url} role="menuitem" class:list={[panelRow, 'px-[0.9rem] py-[0.6rem] text-[0.9375rem] font-semibold tracking-[-0.01em] text-ink']}>
+                      {child.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        ) : (
+          <a href={item.url} class={navLinkBase}>
+            {item.label}
+          </a>
+        );
+      })}
     </nav>
 
-    <div class="col-start-3 flex items-center justify-end gap-3 justify-self-end">
+    <div class="col-start-3 flex items-center justify-end gap-1 justify-self-end sm:gap-2">
+      <ThemeToggle class="text-white light:text-ink hidden" />
       <a
         href={whatsappUrl}
         target="_blank"
@@ -68,8 +132,8 @@ const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
         class="flex size-10 shrink-0 items-center justify-center rounded-full transition hover:bg-white/5"
       >
         <svg
-          width="24"
-          height="24"
+          width="20"
+          height="20"
           viewBox="0 0 16 16"
           fill="currentColor"
           aria-hidden="true"
@@ -80,8 +144,6 @@ const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
         </svg>
       </a>
 
-      <!-- Menu toggle (below 992px): two dashes, 32px wide, morphing to an X
-           when the panel is open. See .menu-bar in global.css. -->
       <button
         type="button"
         data-menu-toggle
@@ -90,29 +152,79 @@ const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
         aria-label="Open menu"
         class="relative flex size-8 shrink-0 cursor-pointer items-center justify-center min-[992px]:hidden"
       >
-        <span class="menu-bar"></span>
-        <span class="menu-bar"></span>
+        <span class="absolute left-0 top-1/2 -mt-px h-px w-8 bg-current transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] -translate-y-1 group-data-[menu-open]/header:translate-y-0 group-data-[menu-open]/header:rotate-45 motion-reduce:transition-none"></span>
+        <span class="absolute left-0 top-1/2 -mt-px h-px w-8 bg-current transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] translate-y-1 group-data-[menu-open]/header:translate-y-0 group-data-[menu-open]/header:-rotate-45 motion-reduce:transition-none"></span>
       </button>
     </div>
   </div>
 
-  <!-- Mobile navigation panel (below 992px). Full-screen and anchored to the
-       top of the viewport so it covers the bar too; the bar sits above it via
-       z-10. The slide is driven by the .mobile-nav class in global.css — no
-       inline transform here, so nothing competes with it. -->
   <div
     id="mobile-nav"
     data-mobile-nav
-    class="mobile-nav absolute inset-x-0 top-0 z-0 h-[100svh] overflow-y-auto bg-[var(--color-body-bg)] pt-[var(--header-height)] min-[992px]:hidden"
+    class="absolute inset-x-0 top-0 z-0 h-[100svh] -translate-y-full overflow-y-auto bg-ink pt-[var(--header-height)] text-white transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] will-change-transform light:bg-white light:text-ink group-data-[menu-open]/header:translate-y-[0%] min-[992px]:hidden motion-reduce:transition-none"
   >
-    <nav class="container flex flex-col gap-1 pb-6 pt-4 text-sm">
-      <a href="/about" class="py-2">About</a>
-      <a href="/machines" class="py-2">Machines</a>
-      {machineLinks.map((link) => (
-        <a href={link.href} class="py-2 pl-4 text-white/60">{link.label}</a>
-      ))}
-      <a href="/news" class="py-2">News</a>
-      <a href="/contact" class="py-2">Contact</a>
+    <div
+      class="pointer-events-none absolute inset-0 bg-[radial-gradient(132.21%_131.76%_at_87.18%_92.97%,#002888_8.85%,#000A22_44.11%)] opacity-0 transition-opacity duration-500 ease-out light:opacity-0 group-data-[menu-open]/header:opacity-100 group-data-[menu-open]/header:light:opacity-0 motion-reduce:transition-none"
+      aria-hidden="true"
+    ></div>
+
+    <nav class="container relative z-10 flex flex-col pb-6 pt-4 text-sm" aria-label="Mobile">
+      {primary.map((item, index) => {
+        const children = visibleChildren(item.children);
+        const hasChildren = children.length > 0;
+        const panelId = `mobile-submenu-${index}`;
+
+        return (
+          <div class="border-t border-white/[0.08] first:border-t-0 light:border-ink/10" data-mobile-group>
+            <div class="flex items-center justify-between gap-4">
+              <a href={item.url} class="flex-1 py-3">
+                {item.label}
+              </a>
+              {hasChildren && (
+                <button
+                  type="button"
+                  data-mobile-submenu-toggle
+                  aria-expanded="false"
+                  aria-controls={panelId}
+                  aria-label={`Show ${item.label} submenu`}
+                  class="flex size-11 shrink-0 cursor-pointer items-center justify-center text-white/70 light:text-ink/60"
+                >
+                  <svg width="12" height="7" viewBox="0 0 12 7" fill="none" aria-hidden="true" class="transition-transform duration-300 ease-out motion-reduce:transition-none">
+                    <path d="M1 1.25l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </button>
+              )}
+            </div>
+
+            {hasChildren && (
+              <div id={panelId} data-mobile-submenu hidden>
+                {children.map((child) => (
+                  <a href={child.url} class="block py-2.5 pl-4 text-white/60 light:text-ink/60">
+                    {child.label}
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })}
+      <div class="mt-4 border-t border-white/[0.08] pt-4 light:border-ink/10">
+        <ThemeToggle class="text-white light:text-ink hidden" />
+      </div>
     </nav>
   </div>
+
+
+  <div
+    data-desktop-scrim
+    aria-hidden="true"
+    class="pointer-events-none absolute inset-x-0 top-[var(--header-height)] z-0 hidden h-[calc(100svh-var(--header-height))] bg-[#010514]/55 opacity-0 transition-opacity duration-300 ease-out group-has-[[data-nav-dropdown]:hover]/header:opacity-100 group-has-[[data-nav-dropdown]:focus-within]/header:opacity-100 min-[992px]:block motion-reduce:transition-none"
+  ></div>
 </header>
+
+<style>
+
+  [data-mobile-submenu-toggle][aria-expanded='true'] svg {
+    transform: rotate(180deg);
+  }
+</style>

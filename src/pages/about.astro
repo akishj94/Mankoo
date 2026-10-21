@@ -1,10 +1,21 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import PageBlocks from '../components/PageBlocks.astro';
+import { getPage } from '../lib/queries';
+import { placeholderLayout } from '../lib/fallbacks';
+import { text } from '../lib/cms';
+
+// Generic copy for a page with no CMS entry yet — nothing here is specific to
+// this route; the real intro comes from the `page_intro` block in the layout.
+const FALLBACK = placeholderLayout('Welcome', 'This page is being written. Please check back shortly.');
+
+const { entry: page, cacheHint } = await getPage('about');
+
+if (Astro.cache?.enabled && cacheHint) Astro.cache.set(cacheHint);
+
+const layout = page?.data.layout;
 ---
 
-<Layout title="About">
-  <section class="mx-auto max-w-6xl px-6 py-24">
-    <h1 data-reveal class="text-3xl font-semibold tracking-tight">About</h1>
-    <p data-reveal class="mt-4 max-w-xl text-neutral-600">Company/about content goes here.</p>
-  </section>
+<Layout title={text(page?.data.title)} description={page?.data.description}>
+  <PageBlocks layout={layout?.length ? layout : FALLBACK} />
 </Layout>

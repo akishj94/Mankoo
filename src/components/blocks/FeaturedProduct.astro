@@ -1,0 +1,28 @@
+---
+import ProductSpotlight from '../sections/ProductSpotlight.astro';
+import { homeFeaturedImage } from '../../lib/fallbacks';
+import { text, type Block } from '../../lib/cms';
+
+interface Props {
+  value: Block<Record<string, unknown>>;
+}
+
+const { value } = Astro.props;
+
+const specs = ((value.specs as Record<string, unknown>[] | undefined) ?? [])
+  .map((spec) => ({ label: text(spec.label), value: text(spec.value) }))
+  .filter((spec) => spec.label && spec.value);
+
+const image = (value.image ?? homeFeaturedImage) as never;
+---
+
+<ProductSpotlight
+  eyebrow={text(value.eyebrow)}
+  title={text(value.title)}
+  description={text(value.description)}
+  {image}
+  imageAlt={text(value.image_alt, text(value.title))}
+  specs={specs}
+  ctaHref={text(value.cta_href)}
+  ctaLabel={text(value.cta_label)}
+/>

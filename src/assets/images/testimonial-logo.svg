@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 48" width="220" height="48" role="img" aria-label="Client logo placeholder">
-  <g fill="none" stroke="#ffffff" stroke-opacity="0.8" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
-    <rect x="2" y="9" width="30" height="30" rx="5"/>
-    <path d="M10 24h14M17 17v14"/>
-  </g>
-  <text x="46" y="31" fill="#ffffff" fill-opacity="0.8" font-family="Inter, Helvetica, Arial, sans-serif" font-size="19" font-weight="600" letter-spacing="1.5">ACME FORGING</text>
-</svg>
