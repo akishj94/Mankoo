@@ -1,0 +1,62 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Media from '../../components/Media.astro';
+import { PortableText } from 'emdash/ui';
+import { getProduct, getProducts } from '../../lib/queries';
+import { text } from '../../lib/cms';
+
+const { slug } = Astro.params;
+
+const { products } = await getProducts();
+const match = products.find((p) => p.id === String(slug ?? ''));
+const lookupSlug = match?.data.slug && typeof match.data.slug === 'string' && match.data.slug.trim() !== '' ? match.data.slug : String(slug ?? '');
+
+const { entry: product, cacheHint } = await getProduct(lookupSlug);
+
+if (Astro.cache?.enabled && cacheHint) Astro.cache.set(cacheHint);
+
+if (!product) {
+  return Astro.redirect('/products', 404);
+}
+
+const title = text(product.data.title, 'Product');
+const description = text(product.data.excerpt);
+const body = (product.data.content ?? undefined) as never;
+---
+
+<Layout title={title} description={description || undefined}>
+  <section class="container py-24">
+    <a href="/products" class="text-sm text-neutral-500 hover:text-ink">← All products</a>
+
+    <p data-reveal class="mt-8 text-[11px] uppercase tracking-[0.2em] text-neutral-500">
+      Machines
+    </p>
+
+    <h1 data-reveal class="mt-4 max-w-3xl text-3xl font-semibold tracking-tight">
+      {title}
+    </h1>
+
+    {description && (
+      <p data-reveal class="mt-4 max-w-xl text-neutral-600">
+        {description}
+      </p>
+    )}
+
+    <Media
+      image={product.data.cover_image ?? null}
+      alt={text(product.data.cover_alt, title)}
+      ratio="16/9"
+      widths={[640, 960, 1280]}
+      sizes="100vw"
+      loading="eager"
+      decoding="async"
+      class="mt-10 bg-neutral-100"
+    />
+
+    {body && (
+      <div data-reveal class="prose-emdash mt-10 max-w-3xl">
+        <PortableText value={body} />
+      </div>
+    )}
+  </section>
+</Layout>

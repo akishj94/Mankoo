@@ -1,0 +1,135 @@
+---
+import type { ImageMetadata } from 'astro';
+import SmartImage from '../SmartImage.astro';
+
+interface GridImage {
+  src: ImageMetadata | string;
+  alt?: string;
+}
+
+interface Stat {
+  value: string;
+  lines: string[];
+}
+
+interface Props {
+  images?: GridImage[];
+  lead?: string;
+  supporting?: string;
+  stats?: Stat[];
+  ctaHref?: string;
+  ctaLines?: string[];
+}
+
+const {
+  images = [],
+  lead = '',
+  supporting = '',
+  stats = [],
+  ctaHref = '',
+  ctaLines = [],
+} = Astro.props;
+
+const [small, large] = images;
+const [only] = images.length === 1 ? images : [];
+---
+
+<section
+  data-split-grid
+  class="bg-[radial-gradient(132.21%_131.76%_at_87.18%_92.97%,#002888_8.85%,#000A22_44.11%)] py-24 text-white light:text-ink"
+>
+  <div class="container grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">
+    {only && (
+      <div class="overflow-hidden bg-neutral-900" data-reveal>
+        <SmartImage
+          src={only.src}
+          alt={only.alt}
+          width={640}
+          height={800}
+          sizes="(min-width: 1024px) 50vw, 100vw"
+          loading="lazy"
+          decoding="async"
+          class="aspect-[4/5] size-full object-cover"
+        />
+      </div>
+    )}
+
+    {!only && (
+      <div class="grid grid-cols-[61fr_39fr]" data-reveal>
+        <div class="col-start-2 row-start-1 aspect-[5/6] overflow-hidden bg-neutral-900">
+          {small && (
+            <SmartImage
+              src={small.src}
+              alt={small.alt}
+              width={640}
+              height={500}
+              sizes="(min-width: 1024px) 20vw, 100vw"
+              loading="lazy"
+              decoding="async"
+              class="size-full object-cover"
+            />
+          )}
+        </div>
+
+        <div class="col-start-1 row-start-2 aspect-[5/6] overflow-hidden bg-neutral-900">
+          {large && (
+            <SmartImage
+              src={large.src}
+              alt={large.alt}
+              width={500}
+              height={690}
+              sizes="(min-width: 1024px) 30vw, 100vw"
+              loading="lazy"
+              decoding="async"
+              class="size-full object-cover"
+            />
+          )}
+        </div>
+      </div>
+    )}
+
+    <div data-reveal class="md:w-[90%] lg:w-[70%] m-auto">
+      {(lead || supporting) && (
+        <p class="text-[clamp(1.25rem,2.2vw,1.875rem)] leading-snug">
+          {lead}
+          {supporting && <span class="text-[#7C7C7C]"> {supporting}</span>}
+        </p>
+      )}
+
+      <div class="mt-12 flex flex-wrap items-end justify-between gap-10">
+        {stats.map((stat) => (
+          <div>
+            <span class="text-6xl">{stat.value}</span>
+            <p class="mt-1 text-xs uppercase leading-snug tracking-[0.12em]">
+              {stat.lines.map((line, i) => (
+                <Fragment>
+                  {i > 0 && <br />}
+                  {line}
+                </Fragment>
+              ))}
+            </p>
+          </div>
+        ))}
+
+        {ctaHref && (
+        <a
+          href={ctaHref}
+          class="inline-flex min-w-[clamp(220px,15vw,300px)] max-w-[300px] items-end justify-between gap-10 rounded-[10px] px-4 py-4 text-[15px] md:text-[16px] text-white backdrop-blur-[5px] transition-all duration-250 hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white light:bg-ink light:hover:bg-ink/85 light:focus-visible:outline-ink bg-[rgba(246,246,246,0.2)] md:hover:bg-[rgba(246,246,246,0.35)] light:md:bg-ink light:md:hover:bg-ink/85 aspect-[6/3] leading-[1.2]"
+        >
+          <span>
+            {ctaLines.map((line, i) => (
+              <Fragment>
+                {i > 0 && <br />}
+                {line}
+              </Fragment>
+            ))}
+          </span>
+          <svg width="15" height="24" class="h-4 w-[15px] shrink-0" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true">
+            <path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z" />
+          </svg>
+        </a>
+        )}
+      </div>
+    </div>
+  </div>
+</section>

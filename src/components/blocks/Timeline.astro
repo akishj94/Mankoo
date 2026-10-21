@@ -1,0 +1,25 @@
+---
+import TimelineSlider from '../sections/TimelineSlider.astro';
+import { text, type Block } from '../../lib/cms';
+
+interface Props {
+  value: Block<Record<string, unknown>>;
+}
+
+const { value } = Astro.props;
+
+const authored = (value.items as Record<string, unknown>[] | undefined) ?? [];
+const items = authored
+  .map((item) => ({
+    year: text(item.year),
+    title: text(item.title),
+    content: text(item.content),
+  }))
+  .filter((item) => item.year || item.title || item.content);
+---
+
+<TimelineSlider
+  eyebrow={text(value.eyebrow)}
+  title={text(value.title)}
+  {items}
+/>

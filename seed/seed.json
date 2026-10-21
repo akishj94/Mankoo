@@ -1,0 +1,1978 @@
+{
+  "$schema": "https://emdashcms.com/seed.schema.json",
+  "version": "1",
+  "defaultLocale": "en",
+  "meta": {
+    "name": "Mankoo",
+    "description": "Content model and starter content for the Mankoo Power Presses site."
+  },
+  "blockTypes": [
+    {
+      "slug": "page_intro",
+      "label": "Page intro",
+      "category": "Layout",
+      "currentVersion": 2,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            {
+              "slug": "eyebrow",
+              "label": "Eyebrow",
+              "type": "string"
+            },
+            {
+              "slug": "title",
+              "label": "Heading",
+              "type": "text",
+              "required": true
+            },
+            {
+              "slug": "content",
+              "label": "Intro copy",
+              "type": "text"
+            },
+            {
+              "slug": "details",
+              "label": "Details",
+              "type": "repeater",
+              "validation": {
+                "subFields": [
+                  {
+                    "slug": "label",
+                    "label": "Label (each line pairs with a value line)",
+                    "type": "text"
+                  },
+                  {
+                    "slug": "value",
+                    "label": "Value (each line is one entry)",
+                    "type": "text"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "version": 2,
+          "fields": [
+            {
+              "slug": "eyebrow",
+              "label": "Eyebrow",
+              "type": "string"
+            },
+            {
+              "slug": "title",
+              "label": "Heading",
+              "type": "text",
+              "required": true
+            },
+            {
+              "slug": "content",
+              "label": "Intro copy",
+              "type": "text"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "hero",
+      "label": "Hero",
+      "category": "Layout",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            {
+              "slug": "eyebrow",
+              "label": "Eyebrow",
+              "type": "string"
+            },
+            {
+              "slug": "title",
+              "label": "Heading",
+              "type": "string",
+              "required": true
+            },
+            {
+              "slug": "video",
+              "label": "Background video",
+              "type": "file",
+              "validation": {
+                "allowedMimeTypes": [
+                  "video/mp4",
+                  "video/webm"
+                ]
+              }
+            },
+            {
+              "slug": "image",
+              "label": "Background image",
+              "type": "image"
+            },
+            {
+              "slug": "image_alt",
+              "label": "Background image alt text",
+              "type": "string"
+            },
+            {
+              "slug": "cta_label",
+              "label": "Button label",
+              "type": "string",
+              "defaultValue": "Discover"
+            },
+            {
+              "slug": "cta_href",
+              "label": "Button link",
+              "type": "string",
+              "defaultValue": "/machines"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "split_grid",
+      "label": "Split grid",
+      "category": "Content",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            {
+              "slug": "lead",
+              "label": "Lead paragraph",
+              "type": "text"
+            },
+            {
+              "slug": "supporting",
+              "label": "Supporting paragraph",
+              "type": "text"
+            },
+            {
+              "slug": "images",
+              "label": "Images",
+              "type": "repeater",
+              "validation": {
+                "subFields": [
+                  {
+                    "slug": "image",
+                    "label": "Image",
+                    "type": "image"
+                  },
+                  {
+                    "slug": "alt",
+                    "label": "Alt text",
+                    "type": "string"
+                  }
+                ]
+              }
+            },
+            {
+              "slug": "stats",
+              "label": "Statistics",
+              "type": "repeater",
+              "validation": {
+                "subFields": [
+                  {
+                    "slug": "value",
+                    "label": "Value",
+                    "type": "string"
+                  },
+                  {
+                    "slug": "label",
+                    "label": "Label",
+                    "type": "string"
+                  }
+                ]
+              }
+            },
+            {
+              "slug": "cta_href",
+              "label": "Button link",
+              "type": "string"
+            },
+            {
+              "slug": "cta_label",
+              "label": "Button label",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "capabilities",
+      "label": "Engineering capability",
+      "category": "Content",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            {
+              "slug": "eyebrow",
+              "label": "Eyebrow",
+              "type": "string",
+              "defaultValue": "ENGINEERING CAPABILITY"
+            },
+            {
+              "slug": "title",
+              "label": "Heading",
+              "type": "text"
+            },
+            {
+              "slug": "slides",
+              "label": "Slides",
+              "type": "repeater",
+              "validation": {
+                "subFields": [
+                  {
+                    "slug": "image",
+                    "label": "Image",
+                    "type": "image"
+                  },
+                  {
+                    "slug": "title",
+                    "label": "Title",
+                    "type": "string"
+                  },
+                  {
+                    "slug": "description",
+                    "label": "Description",
+                    "type": "text"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "machine_slider",
+      "label": "Machine slider",
+      "category": "Content",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            { "slug": "eyebrow", "label": "Eyebrow", "type": "string" },
+            { "slug": "title", "label": "Heading", "type": "text" },
+            { "slug": "view_all_href", "label": "View all link", "type": "string" },
+            { "slug": "view_all_label", "label": "View all label", "type": "string" },
+            {
+              "slug": "slides",
+              "label": "Slides",
+              "type": "repeater",
+              "validation": {
+                "subFields": [
+                  { "slug": "image", "label": "Image", "type": "image" },
+                  { "slug": "title", "label": "Title", "type": "string" },
+                  { "slug": "href", "label": "Link", "type": "string" }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "machine_grid",
+      "label": "Machine grid",
+      "category": "Content",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            {
+              "slug": "eyebrow",
+              "label": "Eyebrow",
+              "type": "string",
+              "defaultValue": "THE MACHINES RANGE"
+            },
+            {
+              "slug": "title",
+              "label": "Heading",
+              "type": "text"
+            },
+            {
+              "slug": "view_all_href",
+              "label": "View all link",
+              "type": "string"
+            },
+            {
+              "slug": "view_all_label",
+              "label": "View all label",
+              "type": "string"
+            },
+            {
+              "slug": "slides",
+              "label": "Machines",
+              "type": "repeater",
+              "validation": {
+                "subFields": [
+                  {
+                    "slug": "image",
+                    "label": "Image",
+                    "type": "image"
+                  },
+                  {
+                    "slug": "title",
+                    "label": "Title",
+                    "type": "string"
+                  },
+                  {
+                    "slug": "description",
+                    "label": "Description",
+                    "type": "text"
+                  },
+                  {
+                    "slug": "href",
+                    "label": "Link",
+                    "type": "string"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "featured_product",
+      "label": "Featured product",
+      "category": "Content",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            {
+              "slug": "eyebrow",
+              "label": "Eyebrow",
+              "type": "string",
+              "defaultValue": "FEATURED PRODUCT"
+            },
+            {
+              "slug": "title",
+              "label": "Title",
+              "type": "string"
+            },
+            {
+              "slug": "description",
+              "label": "Description",
+              "type": "text"
+            },
+            {
+              "slug": "image",
+              "label": "Image",
+              "type": "image"
+            },
+            {
+              "slug": "image_alt",
+              "label": "Image alt text",
+              "type": "string"
+            },
+            {
+              "slug": "specs",
+              "label": "Specifications",
+              "type": "repeater",
+              "validation": {
+                "subFields": [
+                  {
+                    "slug": "label",
+                    "label": "Label",
+                    "type": "string"
+                  },
+                  {
+                    "slug": "value",
+                    "label": "Value",
+                    "type": "string"
+                  }
+                ]
+              }
+            },
+            {
+              "slug": "cta_href",
+              "label": "Button link",
+              "type": "string"
+            },
+            {
+              "slug": "cta_label",
+              "label": "Button label",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "reasons",
+      "label": "Reasons grid",
+      "category": "Content",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            {
+              "slug": "title",
+              "label": "Heading",
+              "type": "string",
+              "defaultValue": "Why manufacturers choose Mankoo Power Presses"
+            },
+            {
+              "slug": "items",
+              "label": "Reasons",
+              "type": "repeater",
+              "validation": {
+                "subFields": [
+                  {
+                    "slug": "title",
+                    "label": "Reason",
+                    "type": "string"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "testimonial",
+      "label": "Testimonial",
+      "category": "Content",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            {
+              "slug": "quote",
+              "label": "Quote",
+              "type": "text"
+            },
+            {
+              "slug": "name",
+              "label": "Name",
+              "type": "string"
+            },
+            {
+              "slug": "role",
+              "label": "Role",
+              "type": "string"
+            },
+            {
+              "slug": "company",
+              "label": "Company",
+              "type": "string"
+            },
+            {
+              "slug": "location",
+              "label": "Location",
+              "type": "string"
+            },
+            {
+              "slug": "logo",
+              "label": "Company logo",
+              "type": "image"
+            },
+            {
+              "slug": "image",
+              "label": "Photo",
+              "type": "image"
+            },
+            {
+              "slug": "image_alt",
+              "label": "Photo alt text",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "latest_posts",
+      "label": "Latest posts",
+      "category": "Content",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            {
+              "slug": "title",
+              "label": "Heading",
+              "type": "string",
+              "defaultValue": "News & Stories"
+            },
+            {
+              "slug": "view_all_href",
+              "label": "View all link",
+              "type": "string"
+            },
+            {
+              "slug": "view_all_label",
+              "label": "View all label",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "rich_text",
+      "label": "Rich text",
+      "category": "Content",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            {
+              "slug": "heading",
+              "label": "Heading",
+              "type": "string"
+            },
+            {
+              "slug": "body",
+              "label": "Body",
+              "type": "portableText"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "media",
+      "label": "Media",
+      "category": "Content",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            {
+              "slug": "video",
+              "label": "Video (wins when both are set)",
+              "type": "file",
+              "validation": {
+                "allowedMimeTypes": [
+                  "video/mp4",
+                  "video/webm"
+                ]
+              }
+            },
+            {
+              "slug": "image",
+              "label": "Image",
+              "type": "image"
+            },
+            {
+              "slug": "image_alt",
+              "label": "Image alt text",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "cta_banner",
+      "label": "CTA banner",
+      "category": "Content",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            {
+              "slug": "title",
+              "label": "Heading",
+              "type": "string",
+              "required": true
+            },
+            {
+              "slug": "text",
+              "label": "Body copy",
+              "type": "text"
+            },
+            {
+              "slug": "image",
+              "label": "Background image",
+              "type": "image"
+            },
+            {
+              "slug": "image_alt",
+              "label": "Background image alt text",
+              "type": "string"
+            },
+            {
+              "slug": "cta_label",
+              "label": "Button label",
+              "type": "string",
+              "defaultValue": "Get in touch"
+            },
+            {
+              "slug": "cta_href",
+              "label": "Button link",
+              "type": "string",
+              "defaultValue": "/contact"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "featured_posts",
+      "label": "Featured posts",
+      "category": "Content",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            {
+              "slug": "eyebrow",
+              "label": "Eyebrow",
+              "type": "string"
+            },
+            {
+              "slug": "title",
+              "label": "Heading",
+              "type": "string",
+              "defaultValue": "News & Stories"
+            },
+            {
+              "slug": "view_all_href",
+              "label": "View all link",
+              "type": "string"
+            },
+            {
+              "slug": "view_all_label",
+              "label": "View all label",
+              "type": "string"
+            },
+            {
+              "slug": "posts",
+              "label": "Posts (pick up to 4 by slug, in order)",
+              "type": "repeater",
+              "validation": {
+                "subFields": [
+                  {
+                    "slug": "slug",
+                    "label": "Post slug",
+                    "type": "string"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "team_grid",
+      "label": "Team grid",
+      "category": "Content",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            {
+              "slug": "eyebrow",
+              "label": "Eyebrow",
+              "type": "string",
+              "defaultValue": "MEET THE LEADERSHIP TEAM"
+            },
+            {
+              "slug": "title",
+              "label": "Heading",
+              "type": "text"
+            },
+            {
+              "slug": "members",
+              "label": "Team members",
+              "type": "repeater",
+              "validation": {
+                "subFields": [
+                  {
+                    "slug": "photo",
+                    "label": "Photo",
+                    "type": "image"
+                  },
+                  {
+                    "slug": "photo_alt",
+                    "label": "Photo alt text",
+                    "type": "string"
+                  },
+                  {
+                    "slug": "name",
+                    "label": "Name",
+                    "type": "string"
+                  },
+                  {
+                    "slug": "role",
+                    "label": "Designation",
+                    "type": "string"
+                  },
+                  {
+                    "slug": "linkedin_href",
+                    "label": "LinkedIn URL",
+                    "type": "string"
+                  },
+                  {
+                    "slug": "linkedin_label",
+                    "label": "LinkedIn label",
+                    "type": "string",
+                    "defaultValue": "LinkedIn"
+                  }
+                ]
+              }
+            },
+            {
+              "slug": "link_href",
+              "label": "Link URL",
+              "type": "string"
+            },
+            {
+              "slug": "link_label",
+              "label": "Link label",
+              "type": "text"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "timeline",
+      "label": "Timeline slider",
+      "category": "Content",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            {
+              "slug": "eyebrow",
+              "label": "Eyebrow",
+              "type": "string",
+              "defaultValue": "OUR JOURNEY"
+            },
+            {
+              "slug": "title",
+              "label": "Heading",
+              "type": "text"
+            },
+            {
+              "slug": "items",
+              "label": "Milestones",
+              "type": "repeater",
+              "validation": {
+                "subFields": [
+                  {
+                    "slug": "year",
+                    "label": "Year",
+                    "type": "string"
+                  },
+                  {
+                    "slug": "title",
+                    "label": "Title",
+                    "type": "string"
+                  },
+                  {
+                    "slug": "content",
+                    "label": "Content",
+                    "type": "text"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "collections": [
+    {
+      "slug": "posts",
+      "label": "Posts",
+      "singularLabel": "Post",
+      "routable": true,
+      "urlPattern": "/blog/[slug]",
+      "admin": {
+        "listColumns": [
+          "title",
+          "category"
+        ]
+      },
+      "fields": [
+        {
+          "slug": "title",
+          "label": "Title",
+          "type": "string",
+          "required": true,
+          "searchable": true,
+          "validation": {
+            "maxLength": 200
+          }
+        },
+        {
+          "slug": "excerpt",
+          "label": "Excerpt",
+          "type": "text",
+          "searchable": true
+        },
+        {
+          "slug": "content",
+          "label": "Content",
+          "type": "portableText",
+          "required": true
+        },
+        {
+          "slug": "cover_image",
+          "label": "Cover image",
+          "type": "image"
+        },
+        {
+          "slug": "cover_alt",
+          "label": "Cover image alt text",
+          "type": "string"
+        },
+        {
+          "slug": "category",
+          "label": "Category",
+          "type": "select",
+          "options": [
+            "Insight",
+            "Product",
+            "Company",
+            "Exhibition"
+          ],
+          "defaultValue": "Insight"
+        },
+        {
+          "slug": "read_time",
+          "label": "Read time",
+          "type": "string",
+          "defaultValue": "3 min read"
+        }
+      ]
+    },
+    {
+      "slug": "products",
+      "label": "Products",
+      "singularLabel": "Product",
+      "routable": true,
+      "urlPattern": "/products/[slug]",
+      "admin": {
+        "listColumns": [
+          "title"
+        ]
+      },
+      "fields": [
+        {
+          "slug": "title",
+          "label": "Title",
+          "type": "string",
+          "required": true,
+          "searchable": true,
+          "validation": {
+            "maxLength": 200
+          }
+        },
+        {
+          "slug": "excerpt",
+          "label": "Excerpt",
+          "type": "text",
+          "searchable": true
+        },
+        {
+          "slug": "content",
+          "label": "Content",
+          "type": "portableText",
+          "required": true
+        },
+        {
+          "slug": "cover_image",
+          "label": "Cover image",
+          "type": "image"
+        },
+        {
+          "slug": "cover_alt",
+          "label": "Cover image alt text",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "slug": "site_details",
+      "label": "Site details",
+      "singularLabel": "Site detail",
+      "routable": false,
+      "admin": {
+        "listColumns": ["title"]
+      },
+      "fields": [
+        {
+          "slug": "title",
+          "label": "Title",
+          "type": "string",
+          "required": true,
+          "defaultValue": "Primary"
+        },
+        { "slug": "email", "label": "Email", "type": "string" },
+        { "slug": "address", "label": "Address", "type": "text" },
+        {
+          "slug": "phones",
+          "label": "Phone numbers",
+          "type": "repeater",
+          "validation": {
+            "subFields": [
+              { "slug": "display", "label": "Display", "type": "string" },
+              { "slug": "number", "label": "Dial number", "type": "string" }
+            ]
+          }
+        },
+        {
+          "slug": "copyright",
+          "label": "Copyright line",
+          "type": "string"
+        },
+        {
+          "slug": "legal_links",
+          "label": "Legal links",
+          "type": "repeater",
+          "validation": {
+            "subFields": [
+              { "slug": "label", "label": "Label", "type": "string" },
+              { "slug": "url", "label": "URL", "type": "string" }
+            ]
+          }
+        },
+        {
+          "slug": "whatsapp_number",
+          "label": "WhatsApp number (leave empty to disable the button)",
+          "type": "string"
+        },
+        {
+          "slug": "whatsapp_message",
+          "label": "WhatsApp prefilled message",
+          "type": "text"
+        },
+        {
+          "slug": "menu_image",
+          "label": "Dropdown menu image (Products / Machines)",
+          "type": "image"
+        },
+        {
+          "slug": "menu_image_alt",
+          "label": "Dropdown menu image alt text",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "slug": "pages",
+      "label": "Pages",
+      "singularLabel": "Page",
+      "routable": false,
+      "admin": {
+        "listColumns": [
+          "title"
+        ]
+      },
+      "fields": [
+        {
+          "slug": "title",
+          "label": "Title",
+          "type": "string",
+          "required": true,
+          "searchable": true
+        },
+        {
+          "slug": "description",
+          "label": "Meta description",
+          "type": "text"
+        },
+        {
+          "slug": "layout",
+          "label": "Page layout",
+          "type": "blocks",
+          "validation": {
+            "allowedTypes": [
+              "hero",
+              "split_grid",
+              "capabilities",
+              "machine_slider",
+              "machine_grid",
+              "featured_product",
+              "reasons",
+              "testimonial",
+              "latest_posts",
+              "featured_posts",
+              "rich_text",
+              "page_intro",
+              "team_grid",
+              "timeline",
+              "media",
+              "cta_banner"
+            ],
+            "maxItems": 20
+          }
+        }
+      ]
+    }
+  ],
+  "settings": {
+    "title": "Mankoo",
+    "tagline": "Power presses, forging hammers and shearing machines since 1974",
+    "postsPerPage": 12,
+    "social": {
+      "facebook": "https://www.facebook.com/mankoopowerpresses/",
+      "twitter": "https://x.com/indermankoo",
+      "instagram": "",
+      "linkedin": "",
+      "youtube": ""
+    }
+  },
+
+  "menus": [
+    {
+      "id": "menu:primary",
+      "name": "primary",
+      "label": "Primary",
+      "items": [
+        { "id": "item:primary:about", "type": "custom", "label": "About", "url": "/about" },
+        {
+          "id": "item:primary:machines",
+          "type": "custom",
+          "label": "Machines",
+          "url": "/machines",
+          "children": [
+            { "id": "item:primary:machines:a", "type": "custom", "label": "Type A", "url": "/machines/type-a" },
+            { "id": "item:primary:machines:b", "type": "custom", "label": "Type B", "url": "/machines/type-b" }
+          ]
+        },
+        { "id": "item:primary:news", "type": "custom", "label": "News", "url": "/blog" },
+        { "id": "item:primary:contact", "type": "custom", "label": "Contact", "url": "/contact" }
+      ]
+    },
+    {
+      "id": "menu:footer-company",
+      "name": "footer-company",
+      "label": "Company",
+      "items": [
+        { "id": "item:fc:about", "type": "custom", "label": "About", "url": "/about" },
+        { "id": "item:fc:news", "type": "custom", "label": "News", "url": "/blog" },
+        { "id": "item:fc:contact", "type": "custom", "label": "Contact", "url": "/contact" }
+      ]
+    },
+    {
+      "id": "menu:footer-machines",
+      "name": "footer-machines",
+      "label": "Machines",
+      "items": [
+        { "id": "item:fm:a", "type": "custom", "label": "Type A Power Press", "url": "/machines/type-a" },
+        { "id": "item:fm:b", "type": "custom", "label": "Type B Power Press", "url": "/machines/type-b" },
+        { "id": "item:fm:all", "type": "custom", "label": "View All", "url": "/machines" }
+      ]
+    },
+    {
+      "id": "menu:footer-connect",
+      "name": "footer-connect",
+      "label": "Connect",
+      "items": []
+    }
+  ],
+
+  "relations": [],
+  "taxonomies": [
+    {
+      "name": "product_type",
+      "label": "Product types",
+      "labelSingular": "Product type",
+      "hierarchical": false,
+      "collections": [
+        "products"
+      ],
+      "terms": [
+        {
+          "slug": "machines",
+          "label": "Machines",
+          "description": "Power presses, forging presses, shearing machines and forge hammers built in Ludhiana."
+        }
+      ]
+    }
+  ],
+  "bylines": [],
+  "content": {
+    "site_details": [
+      {
+        "id": "site-details-primary",
+        "status": "published",
+        "data": {
+          "title": "Primary",
+          "email": "info@mankoopresses.com",
+          "address": "29 / 535, G.T. Road, Opp. Dhandari Kalan Railway Station, Ludhiana - 141010. Punjab. India.",
+          "phones": [
+            { "display": "+91 9988802100", "number": "+919988802100" },
+            { "display": "+91 161 456 7890", "number": "+911614567890" }
+          ],
+          "copyright": "Mankoo India Pvt.Ltd. All rights reserved.",
+          "legal_links": [
+            { "label": "Privacy Policy", "url": "/privacy-policy" },
+            { "label": "Terms", "url": "/terms" }
+          ],
+          "whatsapp_number": "",
+          "whatsapp_message": "Hello Mankoo, I would like to know more about your machines."
+        }
+      }
+    ],
+    "pages": [
+      {
+        "id": "page-home",
+        "slug": "home",
+        "status": "published",
+        "data": {
+          "title": "Home",
+          "description": "Mankoo India has been designing and building power presses, forging hammers and shearing machines in Ludhiana since 1974.",
+          "layout": [
+            {
+              "_type": "hero",
+              "_version": 1,
+              "_key": "home-hero",
+              "eyebrow": "Mankoo India · Ludhiana · Since 1974",
+              "title": "Leading and dedicated Power Press Manufacturer, Since 1974",
+              "cta_label": "Discover",
+              "cta_href": "/machines"
+            },
+            {
+              "_type": "split_grid",
+              "_version": 1,
+              "_key": "home-split-grid",
+              "lead": "Mankoo India designs and builds power presses, forging hammers and shearing machines for manufacturers who run them hardest.",
+              "supporting": "From our plant on GT Road, Ludhiana, every machine is designed, machined, assembled and trial-run under one roof — then shipped to production floors across India and more than ten countries.",
+              "stats": [
+                {
+                  "value": "50+",
+                  "label": "Years in\npower\npresses"
+                }
+              ],
+              "cta_href": "/about",
+              "cta_label": "More About\nour story"
+            },
+            {
+              "_type": "capabilities",
+              "_version": 1,
+              "_key": "home-capabilities",
+              "eyebrow": "ENGINEERING CAPABILITY",
+              "title": "We build the whole machine, not just the frame. Design, machining, assembly and trial runs happen in-house, so every press leaves our unit tested as a complete system.",
+              "slides": [
+                {
+                  "title": "Mechanical power presses",
+                  "description": "C-frame, H-frame, cross-shaft and knuckle-joint presses from 10 to 1000 tons, with single or double gear reduction and pneumatic or rolling-key clutches."
+                },
+                {
+                  "title": "Forging hammers",
+                  "description": "Board and steam hammers sized from 1 to 10 tonnes, on a heavy fabricated frame with contoured guide posts and an anvil block machined to suit your tooling."
+                }
+              ]
+            },
+            {
+              "_type": "machine_slider",
+              "_version": 2,
+              "_key": "home-machines",
+              "eyebrow": "THE MACHINES RANGE",
+              "title": "Seven machine families. One standard - They keep running, shift after shift, year after year.",
+              "view_all_href": "/machines",
+              "view_all_label": "View all",
+              "products": [
+                { "product": "cross-shaft-power-presses" },
+                { "product": "h-frame-mechanical-power-press" },
+                { "product": "c-frame-mechanical-power-press" },
+                { "product": "knuckle-joint-press" },
+                { "product": "straight-side-cross-shaft-power-press" },
+                { "product": "two-point-h-frame-power-press" }
+              ]
+            },
+            {
+              "_type": "featured_product",
+              "_version": 1,
+              "_key": "home-featured",
+              "eyebrow": "FEATURED PRODUCT",
+              "title": "Straight Side Cross Shaft Power Press",
+              "description": "Our straight-side workhorse for heavy stamping lines. A rigid frame for off-centre loads, a pneumatic clutch-brake for precise inching and stops — built and trial-run in Ludhiana before it ships.",
+              "image_alt": "Straight-side cross shaft power press on the shop floor",
+              "specs": [
+                {
+                  "label": "Capacity",
+                  "value": "100T-500T"
+                },
+                {
+                  "label": "Stroke",
+                  "value": "100T-500T"
+                },
+                {
+                  "label": "Stroke per min",
+                  "value": "100T-500T"
+                }
+              ],
+              "cta_href": "/machines/type-a",
+              "cta_label": "Explore the Straight Side Cross Shaft Power Press"
+            },
+            {
+              "_type": "reasons",
+              "_version": 1,
+              "_key": "home-reasons",
+              "title": "Why manufacturers choose Mankoo Power Presses",
+              "items": [
+                {
+                  "title": "Designed, machined and assembled under one roof"
+                },
+                {
+                  "title": "ISO 9001:2015 certified manufacturing"
+                },
+                {
+                  "title": "Five decades of press-building know-how"
+                },
+                {
+                  "title": "Running on production floors in 10+ countries"
+                }
+              ]
+            },
+            {
+              "_type": "testimonial",
+              "_version": 1,
+              "_key": "home-testimonial",
+              "quote": "Twelve years on the same two presses, and they have never taken an unplanned stop. Build quality you can feel in the frame, and the service team answers on the first ring.",
+              "name": "Harjit Singh",
+              "role": "Managing Director",
+              "company": "Brar Auto Components",
+              "location": "Ludhiana",
+              "image_alt": "Mankoo power press running on the client's shop floor"
+            },
+            {
+              "_type": "latest_posts",
+              "_version": 1,
+              "_key": "home-news",
+              "title": "News & Stories",
+              "view_all_href": "/blog",
+              "view_all_label": "View All"
+            }
+          ]
+        }
+      },
+      {
+        "id": "page-about",
+        "slug": "about",
+        "status": "published",
+        "data": {
+          "title": "About",
+          "description": "Five decades of building power presses in Ludhiana, Punjab.",
+          "layout": [
+            {
+              "_type": "page_intro",
+              "_version": 2,
+              "_key": "about-intro",
+              "eyebrow": "About",
+              "title": "Engineering built for the real world.",
+              "content": "Mankoo India designs and builds power presses, forging hammers and shearing machines for manufacturers who run them hardest. From our plant on GT Road, Ludhiana, every machine is designed, machined, assembled and trial-run under one roof — then shipped to production floors across India and more than ten countries.\n\nFounded in 1974, the company has grown into one of the largest power press manufacturers in the region, exporting to customers in more than ten countries."
+            },
+            {
+              "_type": "split_grid",
+              "_version": 1,
+              "_key": "about-story",
+              "lead": "Mankoo India designs and builds power presses, forging hammers and shearing machines for manufacturers who run them hardest.",
+              "supporting": "From our plant on GT Road, Ludhiana, every machine is designed, machined, assembled and trial-run under one roof — then shipped to production floors across India and more than ten countries.",
+              "stats": [
+                {
+                  "value": "50+",
+                  "label": "Years in\npower\npresses"
+                }
+              ],
+              "cta_href": "/contact",
+              "cta_label": "Talk to our\nteam"
+            }            
+          ]
+        }
+      },
+      {
+        "id": "page-contact",
+        "slug": "contact",
+        "status": "published",
+        "data": {
+          "title": "Contact",
+          "description": "Get in touch with Mankoo India, Ludhiana.",
+          "layout": [
+            {
+              "_type": "page_intro",
+              "_version": 2,
+              "_key": "contact-intro",
+              "eyebrow": "Contact",
+              "title": "Get in touch",
+              "content": "We’re here to answer your queries and discuss how Mankoo power presses can be tailored to meet your unique needs."
+            }
+          ]
+        }
+      },
+      {
+        "id": "page-machines",
+        "slug": "machines",
+        "status": "published",
+        "data": {
+          "title": "Machines",
+          "description": "The Mankoo machine range — presses, hammers, shears and spares.",
+          "layout": [
+            {
+              "_type": "page_intro",
+              "_version": 2,
+              "_key": "machines-intro",
+              "eyebrow": "Machines",
+              "title": "The Mankoo Machine Range",
+              "content": "Seven machine families, built and trial-run in Ludhiana before they ship. Use the menu above to jump to an individual machine."
+            },
+            {
+              "_type": "machine_grid",
+              "_version": 1,
+              "_key": "machines-grid",
+              "eyebrow": "THE MACHINES RANGE",
+              "title": "Seven machine families. One standard.",
+              "view_all_href": "/products",
+              "view_all_label": "View all products"
+            }
+          ]
+        }
+      },
+      {
+        "id": "page-type-a",
+        "slug": "machines/type-a",
+        "status": "published",
+        "data": {
+          "title": "Type A Power Press",
+          "description": "Hot and cold forging presses for continuous, heavy-cycle production.",
+          "layout": [
+            {
+              "_type": "rich_text",
+              "_version": 1,
+              "_key": "type-a-intro",
+              "heading": "Type A Power Press",
+              "body": [
+                {
+                  "_type": "block",
+                  "_key": "type-a-intro-p1",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "type-a-intro-p1-s1",
+                      "marks": [],
+                      "text": "The workhorse of the range — hot and cold forging presses built for continuous, heavy-cycle production, from 100 to 500 tonnes."
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "page-type-b",
+        "slug": "machines/type-b",
+        "status": "published",
+        "data": {
+          "title": "Type B Power Press",
+          "description": "A larger frame for long-stroke jobs, with variable speed.",
+          "layout": [
+            {
+              "_type": "rich_text",
+              "_version": 1,
+              "_key": "type-b-intro",
+              "heading": "Type B Power Press",
+              "body": [
+                {
+                  "_type": "block",
+                  "_key": "type-b-intro-p1",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "type-b-intro-p1-s1",
+                      "marks": [],
+                      "text": "A larger frame for long-stroke jobs, with variable speed and a bolt tooling package as standard."
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "posts": [
+      {
+        "id": "post-frames",
+        "slug": "c-frame-or-h-frame",
+        "status": "published",
+        "data": {
+          "title": "C-frame or H-frame: choosing the right press for your die",
+          "excerpt": "Frame geometry decides how a press handles off-centre loads. Here is how to choose between the two.",
+          "category": "Insight",
+          "read_time": "3 min read",
+          "cover_alt": "C-frame or H-frame: choosing the right press for your die",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "c-frame-or-h-frame-body",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "c-frame-or-h-frame-body-s1",
+                  "marks": [],
+                  "text": "The frame is the part of a press you cannot replace later, so it is worth getting right. A C-frame press opens on the left, which gives a clear view of the working area and easy access to the die — the usual choice for general stamping. An H-frame opens on both sides, which is what you want for wide or multi-column tooling and for loading from both ends. Off-centre loads punish a narrow frame, so match the tonnage rating to the real load rather than the peak figure a supplier quotes. If you are ever unsure, send us the die dimensions and the thinnest material you intend to form, and we will size it with you."
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "post-uptime",
+        "slug": "keeping-presses-running",
+        "status": "published",
+        "data": {
+          "title": "What actually keeps a power press running year after year",
+          "excerpt": "A short list of the things that decide whether a press is still accurate in its tenth year.",
+          "category": "Insight",
+          "read_time": "4 min read",
+          "cover_alt": "What actually keeps a power press running year after year",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "keeping-presses-running-body",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "keeping-presses-running-body-s1",
+                  "marks": [],
+                  "text": "Presses do not fail suddenly. They drift. The most common causes are a clutch that has lost its adjustment, a slide running out of parallel because the gibs have worn, and lubrication that was scheduled but never carried out. A weekly fifteen-minute check — gib lubrication, clutch-brake response, and the noise each slide makes on the downstroke — catches nearly all of it. Keep a log. When the same sound changes, you have a problem weeks before the press stops. The machines we build are designed so that these checks are reachable without stripping the slide, and we ship a maintenance schedule with every machine we hand over."
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "post-capacity",
+        "slug": "choosing-press-tonnage",
+        "status": "published",
+        "data": {
+          "title": "How to choose press tonnage without over-buying",
+          "excerpt": "Tonnage is the number people overthink. It is mostly arithmetic once you have the numbers.",
+          "category": "Insight",
+          "read_time": "3 min read",
+          "cover_alt": "How to choose press tonnage without over-buying",
+          "read_time": "3 min read",
+          "cover_alt": "How to choose press tonnage without over-buying",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "choosing-press-tonnage-body",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "choosing-press-tonnage-body-s1",
+                  "marks": [],
+                  "text": "Work out the force your job actually needs — the perimeter of the cut times the material thickness times the shear strength, then divide by the efficiency of your press. That gives a working figure. Then choose the machine above it that sits closest to your normal load rather than the one above your absolute worst case, because a press that only ever sees a fraction of its rating never gets into its efficient band. Buying the larger machine \"to be safe\" costs you capital and floor space, and it is also slower. If your load varies a lot, tell us the range rather than a single number and we will recommend a machine that covers the bulk of it well."
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "products": [
+      {
+        "id": "product-cross-shaft-power-presses",
+        "slug": "cross-shaft-power-presses",
+        "status": "published",
+        "taxonomies": {
+          "product_type": [
+            "machines"
+          ]
+        },
+        "data": {
+          "title": "Cross Shaft Power Presses",
+          "excerpt": "Cross-shaft drive presses for steady, high-tonnage stamping.",
+          "cover_alt": "Cross Shaft Power Presses",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "cross-shaft-power-presses-body",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "cross-shaft-power-presses-body-s1",
+                  "marks": [],
+                  "text": "Cross-shaft drive presses for steady, high-tonnage stamping. In a cross-shaft press the crankshaft runs across the machine, driven through gears from the flywheel, so each stroke draws on stored flywheel energy. That layout suits steady blanking and forming work where the load is heavy but the stroke rate is moderate."
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "product-h-frame-mechanical-power-press",
+        "slug": "h-frame-mechanical-power-press",
+        "status": "published",
+        "taxonomies": {
+          "product_type": [
+            "machines"
+          ]
+        },
+        "data": {
+          "title": "H Frame Mechanical Power Press",
+          "excerpt": "H-frame presses open on both sides for wide tooling and end-to-end loading.",
+          "cover_alt": "H Frame Mechanical Power Press",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "h-frame-mechanical-power-press-body",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "h-frame-mechanical-power-press-body-s1",
+                  "marks": [],
+                  "text": "H-frame presses open on both sides for wide tooling and end-to-end loading. The H frame leaves the working area clear from both ends, which matters for wide dies, multi-column tooling, and parts that load from one side and exit the other."
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "product-c-frame-mechanical-power-press",
+        "slug": "c-frame-mechanical-power-press",
+        "status": "published",
+        "taxonomies": {
+          "product_type": [
+            "machines"
+          ]
+        },
+        "data": {
+          "title": "C Frame Mechanical Power Press",
+          "excerpt": "Gap-frame presses with open access for general stamping and quick die changes.",
+          "cover_alt": "C Frame Mechanical Power Press",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "c-frame-mechanical-power-press-body",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "c-frame-mechanical-power-press-body-s1",
+                  "marks": [],
+                  "text": "Gap-frame presses with open access for general stamping and quick die changes. The C frame leaves the front of the working area completely open, so operators can see the die, feed strip or blanks by hand, and change tooling quickly."
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "product-knuckle-joint-press",
+        "slug": "knuckle-joint-press",
+        "status": "published",
+        "taxonomies": {
+          "product_type": [
+            "machines"
+          ]
+        },
+        "data": {
+          "title": "Knuckle Joint Press",
+          "excerpt": "Knuckle-action presses that peak in force at the bottom of a short, rigid stroke.",
+          "cover_alt": "Knuckle Joint Press",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "knuckle-joint-press-body",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "knuckle-joint-press-body-s1",
+                  "marks": [],
+                  "text": "Knuckle-action presses that peak in force at the bottom of a short, rigid stroke. A knuckle mechanism multiplies force exactly where coining, embossing and sizing need it, then opens fast for part removal."
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "product-straight-side-cross-shaft-power-press",
+        "slug": "straight-side-cross-shaft-power-press",
+        "status": "published",
+        "taxonomies": {
+          "product_type": [
+            "machines"
+          ]
+        },
+        "data": {
+          "title": "Straight Side Cross Shaft Power Press",
+          "excerpt": "Straight-side frames with cross-shaft drive for heavy, off-centre stamping.",
+          "cover_alt": "Straight Side Cross Shaft Power Press",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "straight-side-cross-shaft-power-press-body",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "straight-side-cross-shaft-power-press-body-s1",
+                  "marks": [],
+                  "text": "Straight-side frames with cross-shaft drive for heavy, off-centre stamping. A rigid straight-side frame for off-centre loads, with cross-shaft drive spreading the load across the slide."
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "product-two-point-h-frame-power-press",
+        "slug": "two-point-h-frame-power-press",
+        "status": "published",
+        "taxonomies": {
+          "product_type": [
+            "machines"
+          ]
+        },
+        "data": {
+          "title": "Two Point H Frame Power Press",
+          "excerpt": "Two-point drive H-frame presses that keep wide slides parallel under load.",
+          "cover_alt": "Two Point H Frame Power Press",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "p06-body",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "p06-body-s1",
+                  "marks": [],
+                  "text": "Two-point drive H-frame presses that keep wide slides parallel under load."
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "product-double-crank-cross-shaft",
+        "slug": "double-crank-cross-shaft-power-press",
+        "status": "published",
+        "taxonomies": {
+          "product_type": [
+            "machines"
+          ]
+        },
+        "data": {
+          "title": "Double Crank Cross Shaft Power Press",
+          "excerpt": "Double-crank cross-shaft presses for wide beds and balanced heavy loads.",
+          "cover_alt": "Double Crank Cross Shaft Power Press",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "p07-body",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "p07-body-s1",
+                  "marks": [],
+                  "text": "Double-crank cross-shaft presses for wide beds and balanced heavy loads."
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "product-straight-side-double-crank",
+        "slug": "straight-side-double-crank-power-press",
+        "status": "published",
+        "taxonomies": {
+          "product_type": [
+            "machines"
+          ]
+        },
+        "data": {
+          "title": "Straight Side Double Crank Power Press",
+          "excerpt": "Straight-side double-crank presses for long, heavy press lines.",
+          "cover_alt": "Straight Side Double Crank Power Press",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "p08-body",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "p08-body-s1",
+                  "marks": [],
+                  "text": "Straight-side double-crank presses for long, heavy press lines."
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "product-straight-side-single-crank",
+        "slug": "straight-side-single-crank-power-press",
+        "status": "published",
+        "taxonomies": {
+          "product_type": [
+            "machines"
+          ]
+        },
+        "data": {
+          "title": "Straight Side Single Crank Power Press",
+          "excerpt": "Straight-side single-crank presses for rigid, accurate stamping.",
+          "cover_alt": "Straight Side Single Crank Power Press",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "p09-body",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "p09-body-s1",
+                  "marks": [],
+                  "text": "Straight-side single-crank presses for rigid, accurate stamping."
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "product-ungeared-c-frame",
+        "slug": "ungeared-c-frame-power-press",
+        "status": "published",
+        "taxonomies": {
+          "product_type": [
+            "machines"
+          ]
+        },
+        "data": {
+          "title": "Ungeared C frame Power Press",
+          "excerpt": "Direct-drive ungeared C-frame presses for fast light stamping.",
+          "cover_alt": "Ungeared C frame Power Press",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "p10-body",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "p10-body-s1",
+                  "marks": [],
+                  "text": "Direct-drive ungeared C-frame presses for fast light stamping."
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "product-two-point-high-speed",
+        "slug": "two-point-high-speed-ungeared-press",
+        "status": "published",
+        "taxonomies": {
+          "product_type": [
+            "machines"
+          ]
+        },
+        "data": {
+          "title": "Two Point High Speed Ungeared Press",
+          "excerpt": "High-speed ungeared two-point presses for light high-volume work.",
+          "cover_alt": "Two Point High Speed Ungeared Press",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "p11-body",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "p11-body-s1",
+                  "marks": [],
+                  "text": "High-speed ungeared two-point presses for light high-volume work."
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "product-plunger-guided-link",
+        "slug": "plunger-guided-link-motion-press",
+        "status": "published",
+        "taxonomies": {
+          "product_type": [
+            "machines"
+          ]
+        },
+        "data": {
+          "title": "Plunger Guided Link Motion Press",
+          "excerpt": "Link-motion presses with plunger guidance for quiet, accurate drawing.",
+          "cover_alt": "Plunger Guided Link Motion Press",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "p12-body",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "p12-body-s1",
+                  "marks": [],
+                  "text": "Link-motion presses with plunger guidance for quiet, accurate drawing."
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "product-forging-presses",
+        "slug": "forging-presses",
+        "status": "published",
+        "taxonomies": {
+          "product_type": [
+            "machines"
+          ]
+        },
+        "data": {
+          "title": "Forging Presses",
+          "excerpt": "Heavy forging presses for hot forming and closed-die work.",
+          "cover_alt": "Forging Presses",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "p13-body",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "p13-body-s1",
+                  "marks": [],
+                  "text": "Heavy forging presses for hot forming and closed-die work."
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "product-shearing-machine",
+        "slug": "shearing-machine",
+        "status": "published",
+        "taxonomies": {
+          "product_type": [
+            "machines"
+          ]
+        },
+        "data": {
+          "title": "Shearing Machine",
+          "excerpt": "Mechanical shearing machines for clean, straight sheet cutting.",
+          "cover_alt": "Shearing Machine",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "p14-body",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "p14-body-s1",
+                  "marks": [],
+                  "text": "Mechanical shearing machines for clean, straight sheet cutting."
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "product-drop-forge-hammer",
+        "slug": "drop-forge-hammer",
+        "status": "published",
+        "taxonomies": {
+          "product_type": [
+            "machines"
+          ]
+        },
+        "data": {
+          "title": "Drop Forge Hammer",
+          "excerpt": "Drop forge hammers for high-energy open and closed die forging.",
+          "cover_alt": "Drop Forge Hammer",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "p15-body",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "p15-body-s1",
+                  "marks": [],
+                  "text": "Drop forge hammers for high-energy open and closed die forging."
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

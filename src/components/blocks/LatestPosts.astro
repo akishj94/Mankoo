@@ -1,0 +1,26 @@
+---
+import { getEmDashCollection } from 'emdash';
+import PostGrid from '../sections/PostGrid.astro';
+import { homeFallbackPosts } from '../../lib/fallbacks';
+import { toNewsPost, text, type Block } from '../../lib/cms';
+
+interface Props {
+  value: Block<Record<string, unknown>>;
+}
+
+const { value } = Astro.props;
+
+const { entries: posts } = await getEmDashCollection('posts', {
+  orderBy: { published_at: 'desc' },
+  limit: 3,
+});
+
+const cards = posts.length > 0 ? posts.map(toNewsPost) : homeFallbackPosts;
+---
+
+<PostGrid
+  title={text(value.title)}
+  viewAllHref={text(value.view_all_href)}
+  viewAllLabel={text(value.view_all_label)}
+  posts={cards}
+/>

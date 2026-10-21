@@ -1,0 +1,35 @@
+---
+import SplitGrid from '../sections/SplitGrid.astro';
+import { text, toStats, type Block } from '../../lib/cms';
+
+interface Props {
+  value: Block<Record<string, unknown>>;
+}
+
+const { value } = Astro.props;
+
+const lead = text(value.lead);
+const supporting = text(value.supporting);
+const ctaHref = text(value.cta_href);
+const ctaLines = text(value.cta_label)
+  .split('\n')
+  .map((l) => l.trim())
+  .filter(Boolean);
+
+const authored = (value.images as Record<string, unknown>[] | undefined) ?? [];
+// No stock imagery ships with the site any more, so the copy stands on its own
+// until an editor picks photos in the CMS — the section draws placeholder
+// frames in the meantime.
+const images = authored
+  .map((item) => ({ src: item.image as never, alt: text(item.alt) }))
+  .filter((item) => item.src);
+---
+
+<SplitGrid
+  images={images}
+  lead={lead}
+  supporting={supporting}
+  stats={toStats(value.stats as Record<string, unknown>[])}
+  ctaHref={ctaHref}
+  ctaLines={ctaLines}
+/>

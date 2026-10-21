@@ -1,0 +1,78 @@
+---
+import { decodeSlug, getEmDashEntry } from 'emdash';
+import { PortableText } from 'emdash/ui';
+import Layout from '../../layouts/Layout.astro';
+import SmartImage from '../../components/SmartImage.astro';
+import { text } from '../../lib/cms';
+
+const slug = decodeSlug(Astro.params.slug ?? '');
+
+if (!slug) return Astro.rewrite('/404');
+
+const { entry: post, error, cacheHint } = await getEmDashEntry('posts', slug);
+
+if (error) {
+  console.error(`[cms] Could not load post "${slug}":`, error);
+  return new Response('Unable to load this post', { status: 500 });
+}
+
+if (!post) return Astro.rewrite('/404');
+
+if (Astro.cache?.enabled && cacheHint) Astro.cache.set(cacheHint);
+
+const title = text(post.data.title);
+const published = post.data.published_at
+  ? new Date(post.data.published_at)
+  : null;
+const publishedLabel =
+  published && !Number.isNaN(published.getTime())
+    ? published.toLocaleDateString('en-GB', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      })
+    : '';
+---
+
+<Layout title={title} description={post.data.excerpt}>
+  <article class="mx-auto max-w-6xl px-6 py-24">
+    
+
+    <header class="mt-10">
+      <p class="text-[11px] uppercase tracking-[0.2em] text-white">
+        {[text(post.data.category), text(post.data.read_time), publishedLabel].filter(Boolean).join(' · ')}
+      </p>
+
+      <h1 data-reveal class="mt-4 text-[32px] leading-[1.08] tracking-tight sm:text-[36px] lg:text-[56.5px]">
+        {title}
+      </h1>
+
+      {post.data.excerpt && (
+        <p data-reveal class="mt-5 text-[17px] leading-relaxed text-white">
+          {post.data.excerpt}
+        </p>
+      )}
+    </header>
+
+    {post.data.cover_image && (
+      <div class="mt-12 aspect-[408.32/237.34] w-full overflow-hidden bg-neutral-100">
+        <SmartImage
+          src={post.data.cover_image}
+          alt={text(post.data.cover_alt, title)}
+          widths={[640, 960, 1280, 1600]}
+          sizes="(min-width: 768px) 48rem, 100vw"
+          loading="lazy"
+          decoding="async"
+          class="size-full object-cover"
+        />
+      </div>
+    )}
+
+    <div
+      data-reveal
+      class="mt-12 text-[17px] leading-[1.7] text-white prose-emdash"
+    >
+      <PortableText value={post.data.content as never} />
+    </div>
+  </article>
+</Layout>

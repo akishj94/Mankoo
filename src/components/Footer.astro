@@ -1,107 +1,72 @@
 ---
-// One entry per line the business answers on. The tel: URI is derived from
-// each display string, so a number can be written in whichever format reads
-// best (spaces, dashes, +91) and the dial string still comes out right.
-const phones = ['+91 9988802100', '+91 161 456 7890'];
+import { getSiteData } from '../lib/site';
 
-const email = 'info@mankoopresses.com';
+const { columns, social, details } = await getSiteData();
 
-// The address is used verbatim as the Google Maps query, so it needs no
-// separate link to maintain.
-const address =
-  '29 / 535, G.T. Road, Opp. Dhandari Kalan Railway Station, Ludhiana - 141010. Punjab. India.';
 const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-  address
+  details.address
 )}`;
 
-interface Link {
-  label: string;
-  href: string;
-  /** Opens in a new tab — set on the off-site destinations only. */
-  external?: boolean;
-}
+// Social profiles live under the "Connect" column. That column is the third of
+// the three footer menus; fall back to the last column if an editor renames it,
+// so the links always land somewhere sensible. Columns without links render
+// nothing.
+const connectIndex = columns.findIndex((column) => /^connect$/i.test(column.title.trim()));
+const socialColumnIndex = connectIndex === -1 ? columns.length - 1 : connectIndex;
 
-interface LinkColumn {
-  title: string;
-  links: Link[];
-}
-
-const linkColumns: LinkColumn[] = [
-  {
-    title: 'Company',
-    links: [
-      { label: 'About', href: '/about' },
-      { label: 'News', href: '/news' },
-      { label: 'Contact', href: '/contact' },
-    ],
-  },
-  {
-    title: 'Machines',
-    links: [
-      { label: 'Type A Power Press', href: '/machines/type-a' },
-      { label: 'Type B Power Press', href: '/machines/type-b' },
-      { label: 'View All', href: '/machines' },
-    ],
-  },
-  {
-    title: 'Connect',
-    // TODO: replace with the real profile URLs.
-    links: [
-      { label: 'Facebook', href: 'https://www.facebook.com/mankoopowerpresses/', external: true },
-      { label: 'Twitter / X', href: 'https://x.com/indermankoo', external: true },
-    ],
-  },
-];
-
-// TODO: neither legal page exists yet.
-const legalLinks: Link[] = [
-  { label: 'Privacy Policy', href: '/privacy-policy' },
-  { label: 'Terms', href: '/terms' },
-];
+const visibleColumns = columns.filter(
+  (column, i) => column.links.length > 0 || (i === socialColumnIndex && social.length > 0)
+);
 
 const year = new Date().getFullYear();
 ---
 
-<footer class="text-white border-t-1 border-[#242B3C]">
+<footer class="text-white light:text-ink border-t-1 border-[#242B3C] light:border-ink/10">
   <div class="container pb-8 pt-[clamp(56px,5vw,50px)]">
     <div class="flex flex-col gap-y-12 lg:flex-row lg:items-start">
       <div class="lg:w-72 lg:shrink-0">
-        <a href="/" class="inline-flex focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
+        <a href="/" class="inline-flex focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white light:focus-visible:outline-ink">
           <img
             src="/Logo-06.webp"
             alt="Mankoo"
             width="190"
             height="49"
-            class="h-8 w-auto brightness-0 invert"
+            class="h-8 w-auto brightness-0 invert light:invert-0"
           />
         </a>
 
-        <ul class="mt-6 space-y-3 text-sm text-white/60">
-          <li>
-            <a
-              href={`mailto:${email}`}
-              class="transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
-            >
-              {email}
-            </a>
-          </li>
-          <li>
-            <a
-              href={mapsUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="block max-w-[34ch] transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
-            >
-              {address}
-            </a>
-          </li>
-          {phones.map((phone) => (
+        <ul class="mt-6 space-y-3 text-sm text-white/60 light:text-ink/60">
+          {details.email && (
             <li>
               <a
-                href={`tel:${phone.replace(/[^\d+]/g, '')}`}
-                class="transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+                href={`mailto:${details.email}`}
+                class="transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white light:hover:text-ink light:focus-visible:outline-ink"
               >
-                {phone}
+                {details.email}
+              </a>
+            </li>
+          )}
+
+          {details.address && (
+            <li>
+              <a
+                href={mapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="block max-w-[34ch] transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white light:hover:text-ink light:focus-visible:outline-ink"
+              >
+                {details.address}
+              </a>
+            </li>
+          )}
+
+          {details.phones.map((phone) => (
+            <li>
+              <a
+                href={`tel:${phone.number}`}
+                class="transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white light:hover:text-ink light:focus-visible:outline-ink"
+              >
+                {phone.display}
               </a>
             </li>
           ))}
@@ -109,9 +74,9 @@ const year = new Date().getFullYear();
       </div>
 
       <div class="grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-3 lg:ml-auto lg:flex lg:gap-x-16">
-        {linkColumns.map((column) => (
+        {visibleColumns.map((column) => (
           <nav aria-label={column.title} class="lg:w-44">
-            <h2 class="text-sm uppercase text-white/50">
+            <h2 class="text-sm uppercase text-white/50 light:text-ink/50">
               {column.title}
             </h2>
 
@@ -119,16 +84,33 @@ const year = new Date().getFullYear();
               {column.links.map((link) => (
                 <li>
                   <a
-                    href={link.href}
+                    href={link.url}
                     target={link.external ? '_blank' : undefined}
                     rel={link.external ? 'noopener noreferrer' : undefined}
-                    class="inline-block transition-colors hover:text-white/70 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+                    class="inline-block transition-colors hover:text-white/70 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white light:hover:text-ink/70 light:focus-visible:outline-ink"
                   >
                     {link.label}
                   </a>
                 </li>
               ))}
             </ul>
+
+            {columns[socialColumnIndex] === column && social.length > 0 && (
+              <ul class="mt-6 space-y-4 text-sm">
+                {social.map((profile) => (
+                  <li>
+                    <a
+                      href={profile.url}
+                      target="_blank"
+                      rel="noopener noreferrer me"
+                      class="inline-block transition-colors hover:text-white/70 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white light:hover:text-ink/70 light:focus-visible:outline-ink"
+                    >
+                      {profile.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
           </nav>
         ))}
       </div>
@@ -136,22 +118,24 @@ const year = new Date().getFullYear();
   </div>
 
   <div class="mt-[clamp(40px,4vw,64px)] w-full">
-    <div class="container py-6 text-sm text-white/50">
+    <div class="container py-6 text-sm text-white/50 light:text-ink/50">
       <div class="flex flex-col text-xs gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <p>© {year} Mankoo India Pvt.Ltd. All rights reserved.</p>
+        {details.copyright && <p>© {year} {details.copyright}</p>}
 
-        <ul class="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs">
-          {legalLinks.map((link) => (
-            <li>
-              <a
-                href={link.href}
-                class="transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
-        </ul>
+        {details.legalLinks.length > 0 && (
+          <ul class="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs">
+            {details.legalLinks.map((link) => (
+              <li>
+                <a
+                  href={link.url}
+                  class="transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white light:hover:text-ink light:focus-visible:outline-ink"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   </div>

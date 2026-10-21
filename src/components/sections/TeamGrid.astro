@@ -1,0 +1,104 @@
+---
+import type { ImageMetadata } from 'astro';
+import MediaImage from '../MediaImage.astro';
+
+export interface TeamMember {
+  photo?: ImageMetadata | string | Record<string, unknown> | null;
+  photoAlt?: string;
+  name: string;
+  role?: string;
+  linkedinHref?: string;
+  linkedinLabel?: string;
+}
+
+interface Props {
+  eyebrow?: string;
+  title?: string;
+  members?: TeamMember[];
+  linkHref?: string;
+  linkLabel?: string;
+}
+
+const {
+  eyebrow = '',
+  title = '',
+  members = [],
+  linkHref = '',
+  linkLabel = '',
+} = Astro.props;
+---
+
+<section class="text-white light:text-ink">
+  <div class="container py-16 md:py-24">
+    <div class="w-full min-w-0 md:max-w-[clamp(60%,80vw,940px)]">
+      {eyebrow && (
+        <p
+          class="text-[14px] uppercase tracking-[0.2em] text-accent"
+          data-reveal
+        >
+          {eyebrow}
+        </p>
+      )}
+
+      {title && (
+        <h2
+          class="mt-4 text-[32px] leading-[1.08] tracking-tight text-[clamp(30px,4vw,56.5px)]"
+          data-reveal
+        >
+          {title}
+        </h2>
+      )}
+    </div>
+
+    <div class="mt-10 grid grid-cols-2 gap-x-3 gap-y-12 lg:grid-cols-4">
+      {members.map((member) => (
+        <article data-reveal>
+          <MediaImage
+            src={member.photo}
+            alt={member.photoAlt || member.name}
+            ratio="4/5"
+            widths={[360, 540, 720]}
+            sizes="(min-width: 1024px) 25vw, 50vw"
+            loading="lazy"
+            decoding="async"
+            class="bg-neutral-900"
+          />
+          <h3 class="mt-8 text-[16px] leading-snug">{member.name}</h3>
+          {member.role && (
+            <p class="mt-1 text-[16px] leading-snug text-white/60 light:text-ink/60">{member.role}</p>
+          )}
+          {member.linkedinHref && (
+            <a
+              href={member.linkedinHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="mt-8 inline-flex items-center gap-1 text-[16px] text-white transition-opacity hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white light:text-ink light:focus-visible:outline-ink"
+            >
+              {member.linkedinLabel}
+              <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="currentColor"><path d="m256-240-56-56 384-384H240v-80h480v480h-80v-344L256-240Z"/></svg>
+            </a>
+          )}
+        </article>
+      ))}      
+    </div>
+    {linkHref && (
+        <a
+          href={linkHref}
+          class="inline-flex min-w-[clamp(220px,15vw,300px)] max-w-[300px] items-end justify-between gap-10 rounded-[10px] px-4 py-4 text-[15px] lg:text-[16px] text-white backdrop-blur-[5px] transition-all duration-250 hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white light:bg-ink light:hover:bg-ink/85 light:focus-visible:outline-ink bg-[rgba(246,246,246,0.2)] md:hover:bg-[rgba(246,246,246,0.35)] light:md:bg-ink light:md:hover:bg-ink/85 mt-30 leading-[1.2] aspect-[6/3]"
+          data-reveal
+        >
+          <span>{linkLabel}</span>
+          <svg
+            width="15"
+            height="24"
+            class="h-4 w-[15px] shrink-0"
+            viewBox="0 -960 960 960"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z" />
+          </svg>
+        </a>
+      )}
+  </div>
+</section>

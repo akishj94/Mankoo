@@ -1,0 +1,33 @@
+---
+import Quote from '../sections/Testimonial.astro';
+import { homeTestimonialImage, homeTestimonialLogo } from '../../lib/fallbacks';
+import { text, type Block } from '../../lib/cms';
+
+interface Props {
+  value: Block<Record<string, unknown>>;
+}
+
+const { value } = Astro.props;
+
+const image = (value.image ?? homeTestimonialImage) as never;
+const logo = (value.logo ?? homeTestimonialLogo) as never;
+
+const optional = {
+  quote: text(value.quote),
+  name: text(value.name),
+  role: text(value.role),
+  company: text(value.company),
+  location: text(value.location),
+};
+
+const filled = Object.fromEntries(
+  Object.entries(optional).filter(([, v]) => v !== '')
+);
+---
+
+<Quote
+  {...filled}
+  logo={logo}
+  {image}
+  imageAlt={text(value.image_alt, text(value.company))}
+/>

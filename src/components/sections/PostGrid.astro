@@ -1,0 +1,83 @@
+---
+import type { ImageMetadata } from 'astro';
+import SmartImage from '../SmartImage.astro';
+
+interface Post {
+  href: string;
+  image?: ImageMetadata | string;
+  imageAlt: string;
+  category: string;
+  readTime: string;
+  title: string;
+}
+
+interface Props {
+  title?: string;
+  viewAllHref?: string;
+  viewAllLabel?: string;
+  posts: Post[];
+}
+
+const {
+  title = '',
+  viewAllHref = '',
+  viewAllLabel = '',
+  posts,
+} = Astro.props;
+---
+
+<section data-news class="pb-[clamp(76px,5vw,100px)] text-white light:text-ink">
+  <div class="container pt-[clamp(48px,4vw,72px)]">
+    <div class="flex items-end justify-between gap-8" data-reveal>
+      <div class="w-full min-w-0 md:max-w-[60%]">
+        {title && (
+          <h2 class="text-[32px] leading-[1.08] tracking-tight text-[clamp(30px,4vw,56.5px)]">
+            {title}
+          </h2>
+        )}
+      </div>
+
+      {viewAllHref && (
+        <a
+          href={viewAllHref}
+          class="inline-flex shrink-0 items-center gap-2 transition-colors hover:text-white/70 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white light:hover:text-ink/70 light:focus-visible:outline-ink"
+        >
+          {viewAllLabel}          
+        </a>
+      )}
+    </div>
+
+    <div class="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:mt-14 lg:grid-cols-3">
+      {posts.map((post) => (
+        <a
+          href={post.href}
+          class="group/post block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white light:focus-visible:outline-ink"
+        >
+          <div class="relative aspect-[408.32/237.34] w-full overflow-hidden bg-neutral-900">
+            <SmartImage
+              src={post.image}
+              alt={post.imageAlt}
+              widths={[408, 640, 816, 1200]}
+              sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+              loading="lazy"
+              decoding="async"
+              class="size-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover/post:scale-110 group-focus-visible/post:scale-110"
+            />
+          </div>
+
+          {(post.category || post.readTime) && (
+            <p class="mt-6 text-[11px] uppercase tracking-[0.2em] text-white/50 light:text-ink/60">
+              {[post.category, post.readTime].filter(Boolean).join(' · ')}
+            </p>
+          )}
+
+          {post.title && (
+            <h3 class="mt-4 text-[18px] leading-[1.3] tracking-tight text-white light:text-ink">
+              {post.title}
+            </h3>
+          )}
+        </a>
+      ))}
+    </div>
+  </div>
+</section>

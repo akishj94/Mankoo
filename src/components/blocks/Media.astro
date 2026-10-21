@@ -1,0 +1,17 @@
+---
+import Media from '../Media.astro';
+import { text, type Block } from '../../lib/cms';
+
+interface Props {
+  value: Block<Record<string, unknown>>;
+}
+
+const { value } = Astro.props;
+---
+
+<Media
+  image={(value.image ?? null) as never}
+  video={value.video ?? null}
+  alt={text(value.image_alt)}
+  label={text(value.image_alt, 'video')}
+/>

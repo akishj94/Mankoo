@@ -1,10 +1,80 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import PageBlocks from '../../components/PageBlocks.astro';
+import SmartImage from '../../components/SmartImage.astro';
+import { getPage, getProducts } from '../../lib/queries';
+import { placeholderLayout } from '../../lib/fallbacks';
+import { text } from '../../lib/cms';
+
+const FALLBACK = placeholderLayout(
+  'Machines',
+  'Overview of machine types — see dropdown for individual pages.'
+);
+
+const { entry: page, cacheHint } = await getPage('machines');
+const { products: allProducts, cacheHint: productsCacheHint } = await getProducts('machines');
+
+if (Astro.cache?.enabled && cacheHint) Astro.cache.set(cacheHint);
+if (Astro.cache?.enabled && productsCacheHint) Astro.cache.set(productsCacheHint);
+
+const layout = page?.data.layout;
+
+// Every product in the CMS is a machine, so list them all as the "type machines" grid.
+const cards = allProducts
+  .map((product) => ({
+    href: `/products/${product.id}`,
+    image: product.data.cover_image as never,
+    alt: text(product.data.cover_alt, text(product.data.title)),
+    title: text(product.data.title),
+    description: text(product.data.excerpt),
+  }))
+  .filter((card) => card.title);
 ---
 
-<Layout title="Machines">
-  <section class="mx-auto max-w-6xl px-6 py-24">
-    <h1 data-reveal class="text-3xl font-semibold tracking-tight">Machines</h1>
-    <p data-reveal class="mt-4 max-w-xl text-neutral-600">Overview of machine types — see dropdown for individual pages.</p>
-  </section>
+<Layout title={text(page?.data.title, 'Machines')} description={page?.data.description}>
+  <PageBlocks layout={layout?.length ? layout : FALLBACK} />
+
+  {cards.length > 0 && (
+    <section class="py-14 text-ink sm:py-16 lg:py-6">
+      <div class="container">
+
+        <div class="mb-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-14">
+          {cards.map((card) => {
+            const CardEl = card.href ? 'a' : 'div';
+            return (
+              <CardEl
+                key={card.title}
+                href={card.href || undefined}
+                class="group/card block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
+              >
+                <div class="relative aspect-[4/5] w-full overflow-hidden bg-neutral-100">
+                  <SmartImage
+                    src={card.image}
+                    alt={card.alt}
+                    width={800}
+                    height={1000}
+                    sizes="(min-width: 1536px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 90vw"
+                    loading="lazy"
+                    decoding="async"
+                    class="size-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover/card:scale-110 group-focus-visible/card:scale-110"
+                  />
+                </div>
+
+                {card.title && (
+                  <h3 class="mt-5 text-[20px] tracking-tight text-white">
+                    {card.title}
+                  </h3>
+                )}
+                {card.description && (
+                  <p class="mt-2 max-w-[42ch] text-[15px] leading-[1.2] text-white/50">
+                    {card.description}
+                  </p>
+                )}
+              </CardEl>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  )}
 </Layout>

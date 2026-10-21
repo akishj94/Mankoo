@@ -1,0 +1,29 @@
+---
+import ProductGrid from '../sections/ProductGrid.astro';
+import { text, type Block } from '../../lib/cms';
+
+interface Props {
+  value: Block<Record<string, unknown>>;
+}
+
+const { value } = Astro.props;
+
+const authored = (value.slides as Record<string, unknown>[] | undefined) ?? [];
+const cards = authored
+  .map((slide) => ({
+    href: text(slide.href),
+    image: slide.image as never,
+    alt: text(slide.alt, text(slide.title)),
+    title: text(slide.title),
+    description: text(slide.description),
+  }))
+  .filter((card) => card.title);
+---
+
+<ProductGrid
+  eyebrow={text(value.eyebrow)}
+  title={text(value.title)}
+  viewAllHref={text(value.view_all_href)}
+  viewAllLabel={text(value.view_all_label)}
+  {cards}
+/>
