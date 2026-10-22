@@ -1,10 +1,4 @@
 ---
-/**
- * Smart, truncated + responsive pagination.
- *
- * Desktop (`sm:` and up): Prev / windowed page numbers with ellipses / Next.
- * Mobile: compact Prev / "Page X of Y" / Next bar so nothing can overflow.
- */
 interface Props {
   page: number;
   totalPages: number;
@@ -17,19 +11,18 @@ const { page, totalPages, getHref, ariaLabel = 'Blog pages' } = Astro.props;
 type Item = number | 'ellipsis-start' | 'ellipsis-end';
 
 function windowedPages(current: number, total: number): Item[] {
-  // Few enough pages — show everything, no truncation needed.
   if (total <= 7) {
     return Array.from({ length: total }, (_, i) => i + 1);
   }
-  // Near the start: 1 2 3 4 5 … N
+
   if (current <= 4) {
     return [1, 2, 3, 4, 5, 'ellipsis-end', total];
   }
-  // Near the end: 1 … N-4 N-3 N-2 N-1 N
+
   if (current >= total - 3) {
     return [1, 'ellipsis-start', total - 4, total - 3, total - 2, total - 1, total];
   }
-  // Middle: 1 … C-1 C C+1 … N
+
   return [1, 'ellipsis-start', current - 1, current, current + 1, 'ellipsis-end', total];
 }
 
@@ -38,45 +31,135 @@ const prevHref = page > 1 ? getHref(page - 1) : null;
 const nextHref = page < totalPages ? getHref(page + 1) : null;
 
 const numberBase =
-  'inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg px-3 py-2 text-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink';
+  'inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg px-3 py-2 text-sm text-white transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white';
+
 const arrowBase =
-  'inline-flex min-h-[44px] items-center justify-center rounded-lg px-4 py-2 text-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink';
+  'inline-flex min-h-[44px] items-center justify-center gap-1 rounded-lg px-4 py-2 text-sm text-white transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white';
+
+const linkBase =
+  'text-white hover:bg-[#0030e0] hover:text-white';
+
+const activeBase =
+  'bg-[#0b3bff] font-semibold text-white hover:bg-[#0030e0]';
+
+const disabledBase =
+  'cursor-not-allowed text-white/40';
+
+const arrowIconBase = 'h-5 w-5 shrink-0';
 ---
-<nav aria-label={ariaLabel} class="mt-16">
-  {/* Mobile: compact bar — impossible to overflow, big touch targets. */}
-  <div class="flex items-center justify-between gap-3 sm:hidden">
+
+<nav aria-label={ariaLabel} class="mt-32 text-white">
+  {/* Mobile pagination */}
+  <div class="flex items-center justify-between gap-2 sm:hidden">
     {prevHref ? (
-      <a href={prevHref} rel="prev" class:list={[arrowBase, 'text-neutral-600 hover:bg-neutral-100 hover:text-ink']}>
-        ← Prev
+      <a
+        href={prevHref}
+        rel="prev"
+        class:list={[arrowBase, linkBase]}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 -960 960 960"
+          fill="currentColor"
+          class:list={[arrowIconBase]}
+          aria-hidden="true"
+        >
+          <path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" />
+        </svg>
+        <span>Prev</span>
       </a>
     ) : (
-      <span aria-disabled="true" class:list={[arrowBase, 'cursor-not-allowed opacity-40 text-neutral-400']}>
-        ← Prev
+      <span
+        aria-disabled="true"
+        class:list={[arrowBase, disabledBase]}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 -960 960 960"
+          fill="currentColor"
+          class:list={[arrowIconBase]}
+          aria-hidden="true"
+        >
+          <path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" />
+        </svg>
+        <span>Prev</span>
       </span>
     )}
-    <p aria-live="polite" class="shrink-0 text-sm tabular-nums text-neutral-600">
+
+    <p aria-live="polite" class="shrink-0 text-sm tabular-nums text-white">
       Page {page} of {totalPages}
     </p>
+
     {nextHref ? (
-      <a href={nextHref} rel="next" class:list={[arrowBase, 'text-neutral-600 hover:bg-neutral-100 hover:text-ink']}>
-        Next →
+      <a
+        href={nextHref}
+        rel="next"
+        class:list={[arrowBase, linkBase]}
+      >
+        <span>Next</span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 -960 960 960"
+          fill="currentColor"
+          class:list={[arrowIconBase]}
+          aria-hidden="true"
+        >
+          <path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z" />
+        </svg>
       </a>
     ) : (
-      <span aria-disabled="true" class:list={[arrowBase, 'cursor-not-allowed opacity-40 text-neutral-400']}>
-        Next →
+      <span
+        aria-disabled="true"
+        class:list={[arrowBase, disabledBase]}
+      >
+        <span>Next</span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 -960 960 960"
+          fill="currentColor"
+          class:list={[arrowIconBase]}
+          aria-hidden="true"
+        >
+          <path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z" />
+        </svg>
       </span>
     )}
   </div>
 
-  {/* Tablet/desktop: truncated page numbers with ellipses. Wraps safely if needed. */}
+  {/* Tablet and desktop pagination */}
   <div class="hidden flex-wrap items-center justify-center gap-1 sm:flex sm:gap-2">
     {prevHref ? (
-      <a href={prevHref} rel="prev" class:list={[arrowBase, 'text-neutral-600 hover:bg-neutral-100 hover:text-ink']}>
-        ← Prev
+      <a
+        href={prevHref}
+        rel="prev"
+        class:list={[arrowBase, linkBase]}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 -960 960 960"
+          fill="currentColor"
+          class:list={[arrowIconBase]}
+          aria-hidden="true"
+        >
+          <path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" />
+        </svg>
+        <span>Prev</span>
       </a>
     ) : (
-      <span aria-disabled="true" class:list={[arrowBase, 'cursor-not-allowed opacity-40 text-neutral-400']}>
-        ← Prev
+      <span
+        aria-disabled="true"
+        class:list={[arrowBase, disabledBase]}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 -960 960 960"
+          fill="currentColor"
+          class:list={[arrowIconBase]}
+          aria-hidden="true"
+        >
+          <path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" />
+        </svg>
+        <span>Prev</span>
       </span>
     )}
 
@@ -88,27 +171,53 @@ const arrowBase =
           aria-current={item === page ? 'page' : undefined}
           class:list={[
             numberBase,
-            item === page
-              ? 'bg-neutral-900 font-semibold text-white'
-              : 'text-neutral-600 hover:bg-neutral-100 hover:text-ink',
+            item === page ? activeBase : linkBase,
           ]}
         >
           {item}
         </a>
       ) : (
-        <span aria-hidden="true" class="inline-flex min-h-[44px] min-w-[32px] items-center justify-center px-1 text-sm text-neutral-400">
+        <span
+          aria-hidden="true"
+          class="inline-flex min-h-[44px] min-w-[32px] items-center justify-center px-1 text-sm text-white"
+        >
           …
         </span>
       ),
     )}
 
     {nextHref ? (
-      <a href={nextHref} rel="next" class:list={[arrowBase, 'text-neutral-600 hover:bg-neutral-100 hover:text-ink']}>
-        Next →
+      <a
+        href={nextHref}
+        rel="next"
+        class:list={[arrowBase, linkBase]}
+      >
+        <span>Next</span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 -960 960 960"
+          fill="currentColor"
+          class:list={[arrowIconBase]}
+          aria-hidden="true"
+        >
+          <path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z" />
+        </svg>
       </a>
     ) : (
-      <span aria-disabled="true" class:list={[arrowBase, 'cursor-not-allowed opacity-40 text-neutral-400']}>
-        Next →
+      <span
+        aria-disabled="true"
+        class:list={[arrowBase, disabledBase]}
+      >
+        <span>Next</span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 -960 960 960"
+          fill="currentColor"
+          class:list={[arrowIconBase]}
+          aria-hidden="true"
+        >
+          <path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z" />
+        </svg>
       </span>
     )}
   </div>

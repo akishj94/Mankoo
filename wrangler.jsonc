@@ -1,29 +1,31 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "mankoo",
-  "main": "./src/worker.ts",
-  "compatibility_date": "2026-02-24",
-  "compatibility_flags": ["nodejs_compat"],
-  "observability": {
-    "enabled": true
-  },
-
- 
-  "d1_databases": [
-    {
-      "binding": "DB",
-      "database_name": "mankoo-content",
-      "database_id": "REPLACE_WITH_THE_D1_DATABASE_ID"
-    }
-  ],
-  "r2_buckets": [
-    {
-      "binding": "MEDIA",
-      "bucket_name": "mankoo-media"
-    }
-  ],
-
-  "triggers": {
-    "crons": ["* * * * *"]
-  }
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "mankoo",
+	"main": "./src/worker.ts",
+	"compatibility_date": "2026-02-24",
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
+	"observability": {
+		"enabled": true
+	},
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "mankoo-content",
+			"database_id": "REPLACE_WITH_THE_D1_DATABASE_ID",
+			"migrations_dir": "../../migrations"
+		}
+	],
+	"r2_buckets": [
+		{
+			"binding": "MEDIA",
+			"bucket_name": "mankoo-media"
+		}
+	],
+	"triggers": {
+		"crons": [
+			"* * * * *"
+		]
+	}
 }
