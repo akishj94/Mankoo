@@ -554,7 +554,7 @@
       "slug": "media",
       "label": "Media",
       "category": "Content",
-      "currentVersion": 1,
+      "currentVersion": 2,
       "versions": [
         {
           "version": 1,
@@ -579,6 +579,50 @@
               "slug": "image_alt",
               "label": "Image alt text",
               "type": "string"
+            }
+          ]
+        },
+        {
+          "version": 2,
+          "fields": [
+            {
+              "slug": "video",
+              "label": "Video (wins when both are set)",
+              "type": "file",
+              "validation": {
+                "allowedMimeTypes": [
+                  "video/mp4",
+                  "video/webm"
+                ]
+              }
+            },
+            {
+              "slug": "image",
+              "label": "Image",
+              "type": "image"
+            },
+            {
+              "slug": "image_alt",
+              "label": "Image alt text",
+              "type": "string"
+            },
+            {
+              "slug": "ratio",
+              "label": "Aspect ratio",
+              "type": "select",
+              "options": [
+                "16/9",
+                "4/3",
+                "1/1",
+                "21/9",
+                "3/2",
+                "none"
+              ]
+            },
+            {
+              "slug": "full_width",
+              "label": "100% width",
+              "type": "boolean"
             }
           ]
         }

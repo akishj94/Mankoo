@@ -9,9 +9,12 @@ import { mediaType, mediaUrl } from '../lib/cms';
  * the hero's play/pause control — progress ring, play/pause icons, reduced
  * motion handling — only renders with a clip.
  *
- * Like `MediaImage`/`MediaVideo`, the `ratio` prop (for example `"16/9"`,
- * `"4/5"`, `"1/1"`) is set by the developer at the call site, not a CMS
- * field, so editors can swap media without breaking the proportions.
+ * `ratio` sets the frame proportions with a Tailwind class (for example
+ * `"16/9"`, `"4/5"`, `"1/1"`) and can be chosen by editors in the CMS. Pass
+ * `"none"` (or omit it) to render the media at its natural size with no fixed
+ * frame and no `position: absolute`. When `fullWidth` is set, the media
+ * renders at `width: 100%` with its original aspect ratio instead of filling
+ * an absolute frame.
  */
 export interface Props {
   /** A CMS `image` value or local asset. Ignored when `video` is set. */
@@ -21,8 +24,10 @@ export interface Props {
   /** Overrides the MIME type recorded by the CMS, e.g. "video/mp4". */
   videoType?: string;
   alt?: string;
-  /** Frame proportions, e.g. "16/9". Omit for the natural ratio. */
+  /** Frame proportions, e.g. "16/9". "none" keeps the natural ratio. */
   ratio?: string;
+  /** Render at width: 100% with the original aspect ratio instead of an absolute frame. */
+  fullWidth?: boolean;
   widths?: number[];
   sizes?: string;
   width?: number;
@@ -51,7 +56,8 @@ const {
   video,
   videoType,
   alt = '',
-  ratio = '16/9',
+  ratio = 'none',
+  fullWidth = false,
   widths,
   sizes,
   width,
@@ -67,7 +73,7 @@ const {
   poster,
   label = 'video',
   class: containerClass,
-  mediaClass = 'absolute inset-0 size-full object-cover',
+  mediaClass,
   toggleClass,
 } = Astro.props;
 
@@ -77,18 +83,32 @@ const videoMime = videoType ?? mediaType(video);
 // One medium per frame: the clip wins when an editor sets both.
 const imageSrc = !videoSrc ? (image ?? null) : null;
 
-const frameStyle = ratio ? `aspect-ratio: ${ratio}` : undefined;
+const hasRatio = Boolean(ratio) && ratio !== 'none';
+const ratioClass = hasRatio ? `aspect-[${ratio}]` : undefined;
+// The frame needs a positioning context when the media is absolutely sized
+// (fixed ratio) or when the video toggle overlays it.
+const isRelative = hasRatio || Boolean(videoSrc);
+
+const defaultMediaClass = fullWidth
+  ? 'w-full'
+  : hasRatio
+    ? 'absolute inset-0 size-full object-cover'
+    : 'object-cover';
 ---
 
 {videoSrc ? (
   <div
-    class:list={['relative overflow-hidden', containerClass]}
-    style={frameStyle}
+    class:list={[
+      'overflow-hidden',
+      isRelative && 'relative',
+      containerClass,
+      ratioClass,
+    ]}
     data-video-player
     data-video-label={label}
   >
     <video
-      class={mediaClass}
+      class={mediaClass ?? defaultMediaClass}
       autoplay={autoplay}
       muted={muted}
       loop={loop}
@@ -149,8 +169,12 @@ const frameStyle = ratio ? `aspect-ratio: ${ratio}` : undefined;
   </div>
 ) : (
   <div
-    class:list={['relative overflow-hidden', containerClass]}
-    style={frameStyle}
+    class:list={[
+      'overflow-hidden',
+      isRelative && 'relative',
+      containerClass,
+      ratioClass,
+    ]}
   >
     <SmartImage
       src={imageSrc as never}
@@ -162,7 +186,7 @@ const frameStyle = ratio ? `aspect-ratio: ${ratio}` : undefined;
       loading={loading}
       decoding={decoding}
       priority={priority}
-      class={mediaClass}
+      class={mediaClass ?? defaultMediaClass}
     />
   </div>
 )}

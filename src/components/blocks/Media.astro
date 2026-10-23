@@ -14,4 +14,6 @@ const { value } = Astro.props;
   video={value.video ?? null}
   alt={text(value.image_alt)}
   label={text(value.image_alt, 'video')}
+  ratio={value.ratio ?? ''}
+  fullWidth={value.full_width === true}
 />

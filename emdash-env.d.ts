@@ -221,7 +221,18 @@ export interface PageLayoutMediaV1Block {
   "image_alt"?: string | null;
 }
 
-export type PageLayoutMediaBlock = PageLayoutMediaV1Block;
+export interface PageLayoutMediaV2Block {
+  _type: "media";
+  _version: 2;
+  _key: string;
+  "video"?: { id: string; url?: string; src?: string; filename?: string; mimeType?: string; size?: number; provider?: string; meta?: Record<string, unknown> } | null;
+  "image"?: { id: string; src?: string; alt?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown>; darkVariant?: { id: string; src?: string; alt?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> } } | null;
+  "image_alt"?: string | null;
+  "ratio"?: string | null;
+  "full_width"?: boolean | null;
+}
+
+export type PageLayoutMediaBlock = PageLayoutMediaV1Block | PageLayoutMediaV2Block;
 
 export interface PageLayoutCtaBannerV1Block {
   _type: "cta_banner";
